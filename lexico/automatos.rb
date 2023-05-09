@@ -1,18 +1,23 @@
-entrada = 'aaa3849'
+filename = ARGV[0]
+file = File.open(filename, "r")
+entrada = file.read
+$token = ""
 
 
-def automato(entrada)
+def automato_numerico(entrada)
     entrada.each_char do |i|
         case i
-        when /\A\d+\z/
-                puts "aaa"
+        when /[0-9]/
+                $token << i
         #when 
             
         else
-                puts "bbb"
+                puts "Cadeia não reconhecida"
         end
     end
+    
 end
 
 
-automato(entrada)
+automato_numerico(entrada) 
+puts $token
