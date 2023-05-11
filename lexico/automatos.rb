@@ -34,17 +34,25 @@ def automato_numerico(entrada)
             elsif estado_a == 5
                 estado_a = estados[5]["d"]
                 $token << i
+            else
+                estado_a = -1
             end
         when /[-]/
             if estado_a == 1
                 estado_a = estados[1]["-"]
                 $token << i
+            else
+                estado_a = -1
             end
         when /[,]/
             if estado_a == 2
                 estado_a = estados[2][","]
                 $token << i
+            else
+                estado_a = -1
             end
+        else
+            break
         end
     end
 
@@ -73,8 +81,10 @@ def automato_identificador(entrada)
             if estado_a == 1
                 estado_a = estados[1]["l/L"]
                 $token << i
+            else
+                estado_a = -1
             end 
-        when (/[[:alpha:]]/ || /[[:digit:]]/) && estado_a != 1
+        when (/[[:alpha:]]/ || /[[:digit:]]/)
             if estado_a == 2 
                 estado_a = estados[2]["l/L/d"]
                 $token << i 
@@ -84,13 +94,19 @@ def automato_identificador(entrada)
             elsif estado_a == 4
                 estado_a = estados[4]["l/L/d"]
                 $token << i 
+            else
+                estado_a = -1
             end
         when /[_]/ || /[~]/
             if estado_a == 2
                 puts estado_a
                 estado_a = estados[2]["_/~"]
                 $token << i
-            end               
+            else
+                estado_a = -1
+            end  
+        else
+            break
         end
     end
 
@@ -101,6 +117,25 @@ def automato_identificador(entrada)
     end
 end
 
+def automato_simbolos(entrada):
+    estados = {
+        1=> {";"=> 2,","=> 2,"."=> 2,"*"=> 2, "/"=> 2, "@"=> 2,"("=> 2, ")"=> 2,"{"=> 2,"}"=> 2,"="=> 6, "+"=> 7, ":"=> 3, ">"=> 4, "<"=> 5, ":"=> 6, "-"=> 8},
+        3=> {"="=> 6},
+        4=> {"="=> 6},
+        5=> {"</="=> 6}, 
+        8=> {"-"=> 6},
+    }
+
+
+    entrada.each_char do |i|
+        puts estado_a
+        case i
+        when /[;]/
+            if  
+end
+
+
 
 automato_identificador(entrada) 
+
 puts $token
