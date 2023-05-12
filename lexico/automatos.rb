@@ -74,12 +74,11 @@ def automato_identificador(entrada)
     estado_a = 1
 
     entrada.each_char do |i|
-        puts estado_a
+        
         case i
         when /[[a-zA-Z]]/
             if estado_a == 1
-                estado_a = estados[1]["l/L"]
-                
+                estado_a = estados[1]["l/L"] 
             end 
         when /[a-zA-Z0-9]/
             if estado_a == 2 
@@ -89,15 +88,15 @@ def automato_identificador(entrada)
                 estado_a = estados[3]["l/L/d"]
                 
             elsif estado_a == 4
-                estado_a = estados[4]["l/L/d"]
-                 
+                estado_a = estados[4]["l/L/d"]   
             end
-        when /[_~]/
+        when /(~|_)/ 
             if estado_a == 2
-                puts estado_a
-                estado_a = estados[2]["_/~"]
                 
-            end  
+                estado_a = estados[2]["_/~"]   
+            end 
+        else 
+            break 
         end
     end
 
@@ -127,7 +126,7 @@ def automato_simbolos(entrada)
     estado_a = 1
 
     entrada.each_char do |i|
-      puts estado_a
+      
       case i
 		when *estado1
 			if estado_a == 1
@@ -192,11 +191,77 @@ def automato_simbolos(entrada)
 		end 
     end 
 
-	 estados_finais = [2,3,4,5,6,7,8]
+	estados_finais = [2,3,4,5,6,7,8]
     if estados_finais.include?(estado_a)
         puts "Cadeia reconhecida"
     else
         puts "Cadeia não reconhecida"
     end
 end
-automato_numerico(entrada) 
+
+def automato_comentario(entrada)
+    estados = {
+        1=> {"@"=> 2, "/" => 4, "-" => 8},
+        2=> {"@"=> 3},
+        3=> {"Q"=> 3, "\n" => 7},
+        4=> {"/"=> 5},
+        5=> {"/"=> 6, "Q" => 5}, 
+        6=> {"/"=> 7, "Q" => 5},
+        8=> {">" => 9},
+        9=> {"Q" => 9, "<" => 10},
+        10=> {"-" => 7, "Q" => 9}
+    }
+
+    estado_a = 1
+    qualquer_coisa = (0..127).map(&:chr)
+
+    entrada.each_char do |i|
+        
+        case i
+        when /[@]/
+            if estado_a == 1
+				estado_a = estados[1]["@"]
+			elsif estado_a == 2
+				estado_a = estados[2]["@"]
+            end
+        when /[^_~]/
+            puts i
+            if estado_a == 3
+				estado_a = estados[3]["Q"]
+            elsif estado_a == 6
+				estado_a = estados[6]["Q"]
+            elsif estado_a == 5
+				estado_a = estados[5]["Q"]
+			elsif estado_a == 9
+				estado_a = estados[9]["Q"]
+            elsif estado_a == 10
+				estado_a = estados[10]["Q"]
+            end
+        when /[\/]/
+            if estado_a == 1
+                estado_a = estados[1]["/"]
+            elsif estado_a == 4
+              estado_a = estados[4]["/"]
+            elsif estado_a == 5
+              estado_a = estados[5]["/"]
+            elsif estado_a == 6
+              estado_a = estados[6]["/"]
+            end
+        when "\n"
+            if estado_a == 3
+				estado_a = estados[3]["\n"] 
+            end
+        else
+            break
+        end
+    end
+
+    estados_finais = [7]
+    if estados_finais.include?(estado_a)
+        puts "Cadeia reconhecida"
+    else
+        puts "Cadeia não reconhecida"
+    end
+end
+
+automato_comentario(entrada) 
