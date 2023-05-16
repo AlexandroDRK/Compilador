@@ -74,27 +74,27 @@ def automato_identificador(entrada)
     estado_a = 1
 
     entrada.chars.each do |i|
-        
-        case i
-        when /[[a-zA-Z]]/
-            if estado_a == 1
+        case estado_a
+        when 1
+            if i.match?(/[a-zA-Z]/)
                 estado_a = estados[1]["l/L"] 
             end 
-        when /[a-zA-Z0-9]/
-            if estado_a == 2 
+        when 2
+            if i.match?(/[a-zA-Z0-9]/)
                 estado_a = estados[2]["l/L/d"]
-                 
-            elsif estado_a == 3
+            elsif i.match?(/[~_]/)
+                estado_a = estados[2]["_/~"] 
+            end
+        when 3
+            if i.match?(/[a-zA-Z0-9]/)
                 estado_a = estados[3]["l/L/d"]
-                
-            elsif estado_a == 4
+            else
+                estado_a = -1
+            end
+        when 4
+            if i.match?(/[a-zA-Z0-9]/)
                 estado_a = estados[4]["l/L/d"]   
             end
-        when /(~|_)/ 
-            if estado_a == 2
-                
-                estado_a = estados[2]["_/~"]   
-            end 
         else 
             break 
         end
@@ -215,6 +215,7 @@ def automato_comentario(entrada)
     estado_a = 1
 
     entrada.chars.each do |i|
+        printa_char(i,estado_a)
         case estado_a
         when 1
             if i == "@"
@@ -256,6 +257,12 @@ def automato_comentario(entrada)
 			elsif 
 				estado_a = estados[6]["Q"]
             end
+=begin
+        when 7
+            if 
+                estado_a = 0 
+            end
+=end
         when 8
             if i == ">"
 				estado_a = estados[8][">"]
@@ -281,11 +288,14 @@ def automato_comentario(entrada)
 
     estados_finais = [7]
     if estados_finais.include?(estado_a)
-        puts estado_a
         puts "Cadeia reconhecida"
     else
         puts "Cadeia não reconhecida"
     end
+end
+
+def printa_char(char,estado)
+    puts(char.to_s << " : " << estado)
 end
 
 automato_comentario(entrada) 
