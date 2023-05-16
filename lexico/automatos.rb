@@ -73,7 +73,7 @@ def automato_identificador(entrada)
 
     estado_a = 1
 
-    entrada.each_char do |i|
+    entrada.chars.each do |i|
         
         case i
         when /[[a-zA-Z]]/
@@ -213,44 +213,67 @@ def automato_comentario(entrada)
     }
 
     estado_a = 1
-    qualquer_coisa = (0..127).map(&:chr)
 
-    entrada.each_char do |i|
-        
-        case i
-        when /[@]/
-            if estado_a == 1
+    entrada.chars.each do |i|
+        case estado_a
+        when 1
+            if i == "@"
 				estado_a = estados[1]["@"]
-			elsif estado_a == 2
+            elsif i == "/"
+				estado_a = estados[1]["/"]
+            elsif i == "-"
+				estado_a = estados[1]["-"]
+			else
+				estado_a = 1
+            end
+        when 2
+            if i == "@"
 				estado_a = estados[2]["@"]
+			elsif 
+				estado_a = 2
             end
-        when /[^_~]/
-            puts i
-            if estado_a == 3
+        when 3
+            if i == "\n"
+				estado_a = estados[3]["\n"]
+			elsif 
 				estado_a = estados[3]["Q"]
-            elsif estado_a == 6
-				estado_a = estados[6]["Q"]
-            elsif estado_a == 5
+            end
+        when 4
+            if i == "/"
+				estado_a = estados[4]["/"]
+			elsif 
+				estado_a = 4
+            end
+        when 5
+            if i == "/"
+				estado_a = estados[5]["/"]
+			elsif 
 				estado_a = estados[5]["Q"]
-			elsif estado_a == 9
+            end
+        when 6
+            if i == "/"
+				estado_a = estados[6]["/"]
+			elsif 
+				estado_a = estados[6]["Q"]
+            end
+        when 8
+            if i == ">"
+				estado_a = estados[8][">"]
+			elsif 
+				estado_a = 8
+            end 
+        when 9
+            if i == "<"
+				estado_a = estados[9]["<"]
+			elsif 
 				estado_a = estados[9]["Q"]
-            elsif estado_a == 10
+            end 
+        when 10
+            if i == "-"
+				estado_a = estados[10]["-"]
+			elsif 
 				estado_a = estados[10]["Q"]
-            end
-        when /[\/]/
-            if estado_a == 1
-                estado_a = estados[1]["/"]
-            elsif estado_a == 4
-              estado_a = estados[4]["/"]
-            elsif estado_a == 5
-              estado_a = estados[5]["/"]
-            elsif estado_a == 6
-              estado_a = estados[6]["/"]
-            end
-        when "\n"
-            if estado_a == 3
-				estado_a = estados[3]["\n"] 
-            end
+            end  
         else
             break
         end
@@ -258,6 +281,7 @@ def automato_comentario(entrada)
 
     estados_finais = [7]
     if estados_finais.include?(estado_a)
+        puts estado_a
         puts "Cadeia reconhecida"
     else
         puts "Cadeia não reconhecida"
