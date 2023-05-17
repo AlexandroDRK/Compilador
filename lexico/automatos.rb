@@ -16,6 +16,7 @@ def automato_numerico(entrada)
     estado_a = 1
 
     entrada.each_char do |i|
+        next if i.strip.empty?
         case i
         when /[[:digit:]]/
             if estado_a == 1
@@ -74,28 +75,34 @@ def automato_identificador(entrada)
     estado_a = 1
 
     entrada.chars.each do |i|
+        next if i.strip.empty?
+        puts i
         case estado_a
         when 1
             if i.match?(/[a-zA-Z]/)
                 estado_a = estados[1]["l/L"] 
-            end 
+            end
         when 2
             if i.match?(/[a-zA-Z0-9]/)
                 estado_a = estados[2]["l/L/d"]
-            elsif i.match?(/[~_]/)
+            elsif i == "_" or i == "~"
                 estado_a = estados[2]["_/~"] 
-            end
+            end 
         when 3
             if i.match?(/[a-zA-Z0-9]/)
                 estado_a = estados[3]["l/L/d"]
-            else
+            elsif !i.match?(/[a-zA-Z0-9]/)
                 estado_a = -1
-            end
+                break
+            end 
         when 4
             if i.match?(/[a-zA-Z0-9]/)
-                estado_a = estados[4]["l/L/d"]   
+                estado_a = estados[4]["l/L/d"]
+            elsif !i.match?(/[a-zA-Z0-9]/)
+                estado_a = -1
+                break
             end
-        else 
+        else
             break 
         end
     end
@@ -125,9 +132,9 @@ def automato_simbolos(entrada)
 
     estado_a = 1
 
-    entrada.each_char do |i|
-      
-      case i
+    entrada.chars.each do |i|
+        next if i.strip.empty?
+        case i
 		when *estado1
 			if estado_a == 1
 				estado_a = estados[1][estados[1].keys.first]
@@ -215,7 +222,7 @@ def automato_comentario(entrada)
     estado_a = 1
 
     entrada.chars.each do |i|
-        printa_char(i,estado_a)
+        next if i.strip.empty? && i != "\n"
         case estado_a
         when 1
             if i == "@"
@@ -224,8 +231,6 @@ def automato_comentario(entrada)
 				estado_a = estados[1]["/"]
             elsif i == "-"
 				estado_a = estados[1]["-"]
-			else
-				estado_a = 1
             end
         when 2
             if i == "@"
@@ -236,6 +241,7 @@ def automato_comentario(entrada)
         when 3
             if i == "\n"
 				estado_a = estados[3]["\n"]
+                flag_coment = 1
 			elsif 
 				estado_a = estados[3]["Q"]
             end
@@ -254,15 +260,16 @@ def automato_comentario(entrada)
         when 6
             if i == "/"
 				estado_a = estados[6]["/"]
+                flag_coment = 1
 			elsif 
 				estado_a = estados[6]["Q"]
             end
-=begin
-        when 7
-            if 
-                estado_a = 0 
+        when 7 
+            if flag_coment == 1
+                flag_coment == 2
+            elsif flag_coment == 2
+                estado_a = -1 
             end
-=end
         when 8
             if i == ">"
 				estado_a = estados[8][">"]
@@ -280,6 +287,7 @@ def automato_comentario(entrada)
 				estado_a = estados[10]["-"]
 			elsif 
 				estado_a = estados[10]["Q"]
+                flag_coment = 1
             end  
         else
             break
@@ -295,7 +303,7 @@ def automato_comentario(entrada)
 end
 
 def printa_char(char,estado)
-    puts(char.to_s << " : " << estado)
+    puts(char << " : " << estado.to_s )
 end
 
 automato_comentario(entrada) 
