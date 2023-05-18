@@ -76,7 +76,6 @@ def automato_identificador(entrada)
 
     entrada.chars.each do |i|
         next if i.strip.empty?
-        puts i
         case estado_a
         when 1
             if i.match?(/[a-zA-Z]/)
@@ -223,75 +222,73 @@ def automato_comentario(entrada)
 
     entrada.chars.each do |i|
         next if i.strip.empty? && i != "\n"
-        case estado_a
-        when 1
-            if i == "@"
-				estado_a = estados[1]["@"]
-            elsif i == "/"
-				estado_a = estados[1]["/"]
-            elsif i == "-"
-				estado_a = estados[1]["-"]
+        if estado_a != -1
+            case estado_a
+            when 1
+                if i == "@"
+                    estado_a = estados[1]["@"]
+                elsif i == "/"
+                    estado_a = estados[1]["/"]
+                elsif i == "-"
+                    estado_a = estados[1]["-"]
+                end
+            when 2
+                if i == "@"
+                    estado_a = estados[2]["@"]
+                elsif 
+                    estado_a = 2
+                end
+            when 3
+                if i == "\n"
+                    estado_a = estados[3]["\n"]
+                elsif 
+                    estado_a = estados[3]["Q"]
+                end
+            when 4
+                if i == "/"
+                    estado_a = estados[4]["/"]
+                elsif 
+                    estado_a = 4
+                end
+            when 5
+                if i == "/"
+                    estado_a = estados[5]["/"]
+                elsif 
+                    estado_a = estados[5]["Q"]
+                end
+            when 6
+                if i == "/"
+                    estado_a = estados[6]["/"]
+                    
+                elsif 
+                    estado_a = estados[6]["Q"]
+                end
+            when 7 
+                if i
+                    estado_a = -1
+                end
+            when 8
+                if i == ">"
+                    estado_a = estados[8][">"]
+                elsif 
+                    estado_a = 8
+                end 
+            when 9
+                if i == "<"
+                    estado_a = estados[9]["<"]
+                elsif 
+                    estado_a = estados[9]["Q"]
+                end 
+            when 10
+                if i == "-"
+                    estado_a = estados[10]["-"]
+                elsif 
+                    estado_a = estados[10]["Q"] 
+                end  
             end
-        when 2
-            if i == "@"
-				estado_a = estados[2]["@"]
-			elsif 
-				estado_a = 2
-            end
-        when 3
-            if i == "\n"
-				estado_a = estados[3]["\n"]
-                flag_coment = 1
-			elsif 
-				estado_a = estados[3]["Q"]
-            end
-        when 4
-            if i == "/"
-				estado_a = estados[4]["/"]
-			elsif 
-				estado_a = 4
-            end
-        when 5
-            if i == "/"
-				estado_a = estados[5]["/"]
-			elsif 
-				estado_a = estados[5]["Q"]
-            end
-        when 6
-            if i == "/"
-				estado_a = estados[6]["/"]
-                flag_coment = 1
-			elsif 
-				estado_a = estados[6]["Q"]
-            end
-        when 7 
-            if flag_coment == 1
-                flag_coment == 2
-            elsif flag_coment == 2
-                estado_a = -1 
-            end
-        when 8
-            if i == ">"
-				estado_a = estados[8][">"]
-			elsif 
-				estado_a = 8
-            end 
-        when 9
-            if i == "<"
-				estado_a = estados[9]["<"]
-			elsif 
-				estado_a = estados[9]["Q"]
-            end 
-        when 10
-            if i == "-"
-				estado_a = estados[10]["-"]
-			elsif 
-				estado_a = estados[10]["Q"]
-                flag_coment = 1
-            end  
         else
             break
-        end
+        end     
     end
 
     estados_finais = [7]
