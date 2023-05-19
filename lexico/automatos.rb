@@ -215,76 +215,73 @@ def automato_comentario(entrada)
         6=> {"/"=> 7, "Q" => 5},
         8=> {">" => 9},
         9=> {"Q" => 9, "<" => 10},
-        10=> {"-" => 7, "Q" => 9}
+        10=> {"-" => 7, "Q" => 9},
     }
 
     estado_a = 1
 
     entrada.chars.each do |i|
         next if i.strip.empty? && i != "\n"
-        if estado_a != -1
-            case estado_a
-            when 1
-                if i == "@"
-                    estado_a = estados[1]["@"]
-                elsif i == "/"
-                    estado_a = estados[1]["/"]
-                elsif i == "-"
-                    estado_a = estados[1]["-"]
-                end
-            when 2
-                if i == "@"
-                    estado_a = estados[2]["@"]
-                elsif 
-                    estado_a = 2
-                end
-            when 3
-                if i == "\n"
-                    estado_a = estados[3]["\n"]
-                elsif 
-                    estado_a = estados[3]["Q"]
-                end
-            when 4
-                if i == "/"
-                    estado_a = estados[4]["/"]
-                elsif 
-                    estado_a = 4
-                end
-            when 5
-                if i == "/"
-                    estado_a = estados[5]["/"]
-                elsif 
-                    estado_a = estados[5]["Q"]
-                end
-            when 6
-                if i == "/"
-                    estado_a = estados[6]["/"]
-                    
-                elsif 
-                    estado_a = estados[6]["Q"]
-                end
-            when 7 
-                if i
-                    estado_a = -1
-                end
-            when 8
-                if i == ">"
-                    estado_a = estados[8][">"]
-                elsif 
-                    estado_a = 8
-                end 
-            when 9
-                if i == "<"
-                    estado_a = estados[9]["<"]
-                elsif 
-                    estado_a = estados[9]["Q"]
-                end 
-            when 10
-                if i == "-"
-                    estado_a = estados[10]["-"]
-                elsif 
-                    estado_a = estados[10]["Q"] 
-                end  
+        printa_char(i,estado_a)
+        case estado_a
+        when 1
+            if i == "@"
+				estado_a = estados[1]["@"]
+            elsif i == "/"
+				estado_a = estados[1]["/"]
+            elsif i == "-"
+				estado_a = estados[1]["-"]
+            end
+        when 2
+            if i == "@"
+				estado_a = estados[2]["@"]
+			elsif 
+				estado_a = 2
+            end
+        when 3
+            if i == "\n"
+				estado_a = estados[3]["\n"]
+                flag_coment = 1
+			elsif 
+				estado_a = estados[3]["Q"]
+            end
+        when 4
+            if i == "/"
+				estado_a = estados[4]["/"]
+			elsif 
+				estado_a = 4
+            end
+        when 5
+            if i == "/"
+				estado_a = estados[5]["/"]
+			elsif 
+				estado_a = estados[5]["Q"]
+            end
+        when 6
+            if i == "/"
+				estado_a = estados[6]["/"]
+                flag_coment = 1
+			elsif 
+				estado_a = estados[6]["Q"]
+            end
+        when 8
+            if i == ">"
+				estado_a = estados[8][">"]
+			elsif 
+				estado_a = 8
+            end 
+        when 9
+            if i == "<"
+				estado_a = estados[9]["<"]
+			elsif 
+				estado_a = estados[9]["Q"]
+            end 
+        when 10
+            if i == "-"
+				estado_a = estados[10]["-"]
+			elsif 
+				estado_a = estados[10]["Q"]
+                flag_coment = 1
             end
         else
             break
@@ -300,7 +297,7 @@ def automato_comentario(entrada)
 end
 
 def printa_char(char,estado)
-    puts(char << " : " << estado.to_s )
+    puts(estado.to_s << " : " << char)
 end
 
 automato_comentario(entrada) 
