@@ -181,7 +181,7 @@ def automato_simbolos(entrada)
 				estado_a = estados[1]["+"]
 			elsif estado_a == 7
 				estado_a = estados[7]["+"]
-			else
+			elsegit rebase --continue
 				estado_a = -1
 			end
 		when /[-]/
@@ -281,7 +281,6 @@ def automato_comentario(entrada)
 				estado_a = estados[10]["-"]
 			elsif 
 				estado_a = estados[10]["Q"]
-                flag_coment = 1
             end
         else
             break
