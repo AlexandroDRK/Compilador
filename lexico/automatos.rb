@@ -1,9 +1,9 @@
-filename = ARGV[0]
-file = File.open(filename, "r")
-entrada = file.read
+#filename = ARGV[0]
+#file = File.open(filename, "r")
+#entrada = file.read
 
 
-def automato_numerico(entrada)
+def automato_numerico(char,estado_atual,buffer)
 
     estados = {
         1=> {"d"=> 2, "-" => 5},
@@ -13,58 +13,53 @@ def automato_numerico(entrada)
         5=> {"d"=> 2},
     }
 
-    estado_a = 1
-
-    entrada.each_char do |i|
-        next if i.strip.empty?
-        case i
-        when /[[:digit:]]/
-            if estado_a == 1
-                estado_a = estados[1]["d"]
-                
-            elsif estado_a == 2
-                estado_a = estados[2]["d"]
-                
-            elsif estado_a == 3
-                estado_a = estados[3]["d"]
-                
-            elsif estado_a == 4
-                estado_a = estados[4]["d"]
-                
-            elsif estado_a == 5
-                estado_a = estados[5]["d"]
-                
-            else
-                estado_a = -1
-            end
-        when /[-]/
-            if estado_a == 1
-                estado_a = estados[1]["-"]
-                
-            else
-                estado_a = -1
-            end
-        when /[,]/
-            if estado_a == 2
-                estado_a = estados[2][","]
-                
-            else
-                estado_a = -1
-            end
+    case char
+    when /[[:digit:]]/
+        if estado_atual == 1
+            estado_atual = estados[1]["d"]
+            buffer << char
+            
+        elsif estado_atual == 2
+            estado_atual = estados[2]["d"]
+            buffer << char
+            
+        elsif estado_atual == 3
+            estado_atual = estados[3]["d"]
+            buffer << char
+            
+        elsif estado_atual == 4
+            estado_a = estados[4]["d"]
+            buffer << char
+            
+        elsif estado_atual== 5
+            estado_a = estados[5]["d"]
+            buffer << char
+            
         else
-            break
+            estado_atual= -1
         end
-		end
-
-		estados_finais = [2,4]
-		if estados_finais.include?(estado_a)
-			puts "Cadeia reconhecida"
-		else
-			puts "Cadeia não reconhecida"
-		end
+    when /[-]/
+        if estado_atual == 1
+            estado_atual= estados[1]["-"]
+            buffer << char
+        else
+            estado_atual = -1
+        end
+    when /[,]/
+        if estado_atual == 2
+            estado_atual= estados[2][","]
+            buffer << char 
+        else
+            estado_atual = -1
+        end
+    else
+        print buffer
     end
 
-def automato_identificador(entrada)
+    
+end
+
+def automato_identificador(i,estado_atual,buffer)
     estados = {
         1=> {"l/L"=> 2},
         2=> {"_/~"=> 4, "l/L/d"=> 3},
@@ -72,45 +67,30 @@ def automato_identificador(entrada)
         4=> {"l/L/d"=> 3}
     }
 
-    estado_a = 1
 
-    entrada.chars.each do |i|
-        next if i.strip.empty?
-        case estado_a
-        when 1
-            if i.match?(/[a-zA-Z]/)
-                estado_a = estados[1]["l/L"] 
-            end
-        when 2
-            if i.match?(/[a-zA-Z0-9]/)
-                estado_a = estados[2]["l/L/d"]
-            elsif i == "_" or i == "~"
-                estado_a = estados[2]["_/~"] 
-            end 
-        when 3
-            if i.match?(/[a-zA-Z0-9]/)
-                estado_a = estados[3]["l/L/d"]
-            elsif !i.match?(/[a-zA-Z0-9]/)
-                estado_a = -1
-                break
-            end 
-        when 4
-            if i.match?(/[a-zA-Z0-9]/)
-                estado_a = estados[4]["l/L/d"]
-            elsif !i.match?(/[a-zA-Z0-9]/)
-                estado_a = -1
-                break
-            end
-        else
-            break 
+    case estado_atual
+    when 1
+        if i.match?(/[a-zA-Z]/)
+            estado_a = estados[1]["l/L"] 
         end
-    end
-
-    estados_finais = [2,3]
-    if estados_finais.include?(estado_a)
-        puts "Cadeia reconhecida"
-    else
-        puts "Cadeia não reconhecida"
+    when 2
+        if i.match?(/[a-zA-Z0-9]/)
+            estado_a = estados[2]["l/L/d"]
+        elsif i == "_" or i == "~"
+            estado_a = estados[2]["_/~"] 
+        end 
+    when 3
+        if i.match?(/[a-zA-Z0-9]/)
+            estado_a = estados[3]["l/L/d"]
+        elsif !i.match?(/[a-zA-Z0-9]/)
+            estado_a = -1
+        end 
+    when 4
+        if i.match?(/[a-zA-Z0-9]/)
+            estado_a = estados[4]["l/L/d"]
+        elsif !i.match?(/[a-zA-Z0-9]/)
+            estado_a = -1
+        end 
     end
 end
 
@@ -299,4 +279,4 @@ def printa_char(char,estado)
     puts(estado.to_s << " : " << char)
 end
 
-automato_comentario(entrada) 
+#automato_comentario(entrada) 
