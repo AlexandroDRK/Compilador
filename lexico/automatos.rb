@@ -6,33 +6,32 @@
 def automato_numerico(char,estado_atual,buffer)
 
     estados = {
-        1=> {"d"=> 2, "-" => 5},
-        2=> {"d"=> 2, ","=> 3},
-        3=> {"d"=> 4},
-        4=> {"d"=> 4},
-        5=> {"d"=> 2},
+        1=> {"d"=> 5, "-" => 6},
+        5=> {"d"=> 5, ","=> 7},
+        6=> {"d"=> 5},
+        7=> {"d"=> 8},
+        8=> {"d"=> 8},
     }
 
     case char
     when /[[:digit:]]/
         if estado_atual == 1
             estado_atual = estados[1]["d"]
+            buffer << char   
+        elsif estado_atual == 5
+            estado_atual = estados[5]["d"]
             buffer << char
             
-        elsif estado_atual == 2
-            estado_atual = estados[2]["d"]
+        elsif estado_atual == 6
+            estado_atual = estados[6]["d"]
             buffer << char
             
-        elsif estado_atual == 3
-            estado_atual = estados[3]["d"]
+        elsif estado_atual == 7
+            estado_a = estados[7]["d"]
             buffer << char
             
-        elsif estado_atual == 4
-            estado_a = estados[4]["d"]
-            buffer << char
-            
-        elsif estado_atual== 5
-            estado_a = estados[5]["d"]
+        elsif estado_atual== 8
+            estado_a = estados[8]["d"]
             buffer << char
             
         else
@@ -46,17 +45,15 @@ def automato_numerico(char,estado_atual,buffer)
             estado_atual = -1
         end
     when /[,]/
-        if estado_atual == 2
-            estado_atual= estados[2][","]
+        if estado_atual == 5
+            estado_atual= estados[5][","]
             buffer << char 
         else
             estado_atual = -1
         end
     else
         print buffer
-    end
-
-    
+    end  
 end
 
 def automato_identificador(i,estado_atual,buffer)
