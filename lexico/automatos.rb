@@ -8,8 +8,6 @@ def automato_numerico(char)
         8=> {"d"=> 8},
     }
 
-    #puts char
-    #puts @estado_atual
     case @estado_atual
     when 1 
         if char.match?(/[[:digit:]]/)
@@ -19,9 +17,8 @@ def automato_numerico(char)
             @estado_atual = estados[1]["-"]
             @buffer << char
         else
-            puts @buffer
-            limpa_lexema(@buffer)
             @estado_atual = 1
+            @fin_token = 1
         end
     when 5       
         if char.match?(/[[:digit:]]/)
@@ -32,40 +29,37 @@ def automato_numerico(char)
             @estado_atual = estados[5][","]
             @buffer << char
         else
-            puts @buffer
-            limpa_lexema(@buffer)
             @estado_atual = 1
+            @fin_token = 1
         end
     when 6       
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[6]["d"]
             @buffer << char
         else
-            puts @buffer
-            limpa_lexema(@buffer)
             @estado_atual = 1
+            @fin_token = 1
         end  
     when 7       
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[7]["d"]
             @buffer << char 
         else
-            limpa_lexema(@buffer)
             @estado_atual = 1
+            @fin_token = 1
         end
     when 8
         if char.match?(/[[:digit:]]/)
             @estado_atual= estados[8]["d"]
             @buffer << char
         elsif !char.match?(/[[:digit:]]/)
-            puts @buffer
-            limpa_lexema(@buffer)
             @estado_atual = 1
+            @fin_token = 1
         end
     end  
 end
 
-def automato_identificador(i)
+def automato_identificador(char)
     estados = {
         1=> {"l/L"=> 2},
         2=> {"_/~"=> 4, "l/L/d"=> 3},
@@ -73,29 +67,43 @@ def automato_identificador(i)
         4=> {"l/L/d"=> 3}
     }
 
-    puts "passou aqui"
+    #puts ("caracter:  #{char}")
+    #puts ("@estado_atual: #{@estado_atual}")
     case @estado_atual
     when 1
-        if i.match?(/[a-zA-Z]/)
-            @estado_atual = estados[1]["l/L"] 
+        if char.match?(/[a-zA-Z]/)
+            @estado_atual = estados[1]["l/L"]
+            @buffer << char
+        else
+            @estado_atual = 1
+            @fin_token = 1
         end
     when 2
-        if i.match?(/[a-zA-Z0-9]/)
+        if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[2]["l/L/d"]
-        elsif i == "_" or i == "~"
-            @estado_atual = estados[2]["_/~"] 
+            @buffer << char
+        elsif char == "_" or char == "~"
+            @estado_atual = estados[2]["_/~"]
+            @buffer << char
+        else
+            @estado_atual = 1
+            @fin_token = 1
         end 
     when 3
-        if i.match?(/[a-zA-Z0-9]/)
+        if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[3]["l/L/d"]
-        elsif !i.match?(/[a-zA-Z0-9]/)
-            @estado_atual = -1
+            @buffer << char
+        elsif !char.match?(/[a-zA-Z0-9]/)
+            @estado_atual = 1
+            @fin_token = 1
         end 
     when 4
-        if i.match?(/[a-zA-Z0-9]/)
+        if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[4]["l/L/d"]
-        elsif !i.match?(/[a-zA-Z0-9]/)
-            @estado_atual = -1
+            @buffer << char
+        elsif !char.match?(/[a-zA-Z0-9]/)
+            @estado_atual = 1
+            @fin_token = 1
         end 
     end
 end
@@ -167,7 +175,7 @@ def automato_simbolos(entrada)
 				@estado_atual = estados[1]["+"]
 			elsif @estado_atual == 7
 				@estado_atual = estados[7]["+"]
-			elsegit rebase --continue
+			else
 				@estado_atual = -1
 			end
 		when /[-]/

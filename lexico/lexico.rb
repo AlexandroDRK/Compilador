@@ -8,34 +8,23 @@ class Lexico
     @input = file.read
     @estado_atual = 1
     @buffer = ""
+    @fin_token = 0
   end
 
   def tokenize
     #@input.chars.each do |i|
-    (0...@input.length).each do |index|
-      #next if i.strip.empty?
+    index = 0
+    while index < @input.length
       i = @input[index]
-      #if i.match?(/[0-9]/)
       automato_numerico(i)
-      #elsif i.match?(/[a-zA-Z0-9]/) or i.match?(/[_~]/) 
-      #automato_identificador(i, @buffer)
-      #elsif i.match?(/[@\/\-*+=<>]/)
-        #@estado_atual = automato_simbolos(i, @estado_atual,@buffer)
-     #end
+      automato_identificador(i) 
+      if @fin_token == 1
+        puts @buffer
+        @fin_token = 0
+        @buffer = ""
+      end
+      index += 1
     end
-
-=begin
-		estados_finais = [2,3,4,5]
-		if estados_finais.include?(@estado_atual)
-			puts "Cadeia reconhecida"
-		else
-			puts "Cadeia não reconhecida"
-		end
-=end
-  end
-
-  def limpa_lexema(lexema)
-    lexema.clear
   end
 end
   
