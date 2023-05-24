@@ -1,9 +1,4 @@
-#filename = ARGV[0]
-#file = File.open(filename, "r")
-#entrada = file.read
-
-
-def automato_numerico(char,estado_atual,buffer)
+def automato_numerico(char,buffer)
 
     estados = {
         1=> {"d"=> 5, "-" => 6},
@@ -13,50 +8,63 @@ def automato_numerico(char,estado_atual,buffer)
         8=> {"d"=> 8},
     }
 
-    case char
-    when /[[:digit:]]/
-        if estado_atual == 1
-            estado_atual = estados[1]["d"]
+    case @estado_atual
+    when 1 
+        if char.match?(/[[:digit:]]/)
+            @estado_atual = estados[1]["d"]
             buffer << char   
-        elsif estado_atual == 5
-            estado_atual = estados[5]["d"]
-            buffer << char
-            
-        elsif estado_atual == 6
-            estado_atual = estados[6]["d"]
-            buffer << char
-            
-        elsif estado_atual == 7
-            estado_a = estados[7]["d"]
-            buffer << char
-            
-        elsif estado_atual== 8
-            estado_a = estados[8]["d"]
-            buffer << char
-            
-        else
-            estado_atual= -1
-        end
-    when /[-]/
-        if estado_atual == 1
-            estado_atual= estados[1]["-"]
+        elsif char == "-"
+            @estado_atual = estados[1]["-"]
             buffer << char
         else
-            estado_atual = -1
+            puts buffer
+            limpa_lexema(buffer)
+            @flag_aut = 1
         end
-    when /[,]/
-        if estado_atual == 5
-            estado_atual= estados[5][","]
+    when 5       
+        if char.match?(/[[:digit:]]/)
+            @estado_atual = estados[5]["d"]
+            buffer << char
+            
+        elsif char == ","
+            @estado_atual = estados[5][","]
+            buffer << char
+        else
+            puts buffer
+            limpa_lexema(buffer)
+            @flag_aut = 1
+        end
+    when 6       
+        if char.match?(/[[:digit:]]/)
+            @estado_atual = estados[6]["d"]
+            buffer << char
+        else
+            puts buffer
+            limpa_lexema(buffer)
+            @flag_aut = 1
+        end  
+    when 7       
+        if char.match?(/[[:digit:]]/)
+            @estado_atual = estados[7]["d"]
             buffer << char 
         else
-            estado_atual = -1
+            puts buffer
+            limpa_lexema(buffer)
+            @flag_aut = 1
         end
-    else
-        print buffer
+    when 8
+        if char.match?(/[[:digit:]]/)
+            @estado_atual= estados[8]["d"]
+            buffer << char
+        elsif !char.match?(/[[:digit:]]/)
+            puts buffer
+            limpa_lexema(buffer)
+            @flag_aut = 1
+        end
     end  
 end
 
-def automato_identificador(i,estado_atual,buffer)
+def automato_identificador(i,buffer)
     estados = {
         1=> {"l/L"=> 2},
         2=> {"_/~"=> 4, "l/L/d"=> 3},
@@ -65,28 +73,28 @@ def automato_identificador(i,estado_atual,buffer)
     }
 
 
-    case estado_atual
+    case @estado_atual
     when 1
         if i.match?(/[a-zA-Z]/)
-            estado_a = estados[1]["l/L"] 
+            @estado_atual = estados[1]["l/L"] 
         end
     when 2
         if i.match?(/[a-zA-Z0-9]/)
-            estado_a = estados[2]["l/L/d"]
+            @estado_atual = estados[2]["l/L/d"]
         elsif i == "_" or i == "~"
-            estado_a = estados[2]["_/~"] 
+            @estado_atual = estados[2]["_/~"] 
         end 
     when 3
         if i.match?(/[a-zA-Z0-9]/)
-            estado_a = estados[3]["l/L/d"]
+            @estado_atual = estados[3]["l/L/d"]
         elsif !i.match?(/[a-zA-Z0-9]/)
-            estado_a = -1
+            @estado_atual = -1
         end 
     when 4
         if i.match?(/[a-zA-Z0-9]/)
-            estado_a = estados[4]["l/L/d"]
+            @estado_atual = estados[4]["l/L/d"]
         elsif !i.match?(/[a-zA-Z0-9]/)
-            estado_a = -1
+            @estado_atual = -1
         end 
     end
 end
@@ -106,68 +114,68 @@ def automato_simbolos(entrada)
 	 estado5 = [">","="]
 
 
-    estado_a = 1
+    @estado_atual = 1
 
     entrada.chars.each do |i|
         next if i.strip.empty?
         case i
 		when *estado1
-			if estado_a == 1
-				estado_a = estados[1][estados[1].keys.first]
+			if @estado_atual == 1
+				@estado_atual = estados[1][estados[1].keys.first]
 			else
-				estado_a = -1
+				@estado_atual = -1
 			end
 		when /[:]/
-			if estado_a == 1
-				estado_a = estados[1][":"]
+			if @estado_atual == 1
+				@estado_atual = estados[1][":"]
 			else
-				estado_a = -1
+				@estado_atual = -1
 			end
 		when /[=]/
-			if estado_a == 1
-				estado_a = estados[1]["="]
-			elsif estado_a == 3
-				estado_a = estados[3]["="]
-			elsif estado_a == 4
-				estado_a = estados[4]["="]
-			elsif estado_a == 5
-				estado_a = estados[5][estados[5].keys.first]
-			elsif estado_a == 7
-				estado_a = estados[7]["="]
-			elsif estado_a == 8
-				estado_a = estados[8]["="]
+			if @estado_atual == 1
+				@estado_atual = estados[1]["="]
+			elsif @estado_atual == 3
+				@estado_atual = estados[3]["="]
+			elsif @estado_atual == 4
+				@estado_atual = estados[4]["="]
+			elsif @estado_atual == 5
+				@estado_atual = estados[5][estados[5].keys.first]
+			elsif @estado_atual == 7
+				@estado_atual = estados[7]["="]
+			elsif @estado_atual == 8
+				@estado_atual = estados[8]["="]
 			else
-				estado_a = -1
+				@estado_atual = -1
 			end
 		when /[>]/
-			if estado_a == 1
-				estado_a = estados[1][">"]
-			elsif estado_a == 5
-				estado_a = estados[5][estados[5].keys.first]
+			if @estado_atual == 1
+				@estado_atual = estados[1][">"]
+			elsif @estado_atual == 5
+				@estado_atual = estados[5][estados[5].keys.first]
 			else
-				estado_a = -1
+				@estado_atual = -1
 			end
 		when /[<]/	
-			if estado_a == 1
-				estado_a = estados[1]["<"]
+			if @estado_atual == 1
+				@estado_atual = estados[1]["<"]
 			else
-				estado_a = -1
+				@estado_atual = -1
 			end
 		when /[+]/
-			if estado_a == 1
-				estado_a = estados[1]["+"]
-			elsif estado_a == 7
-				estado_a = estados[7]["+"]
+			if @estado_atual == 1
+				@estado_atual = estados[1]["+"]
+			elsif @estado_atual == 7
+				@estado_atual = estados[7]["+"]
 			elsegit rebase --continue
-				estado_a = -1
+				@estado_atual = -1
 			end
 		when /[-]/
-			if estado_a == 1
-				estado_a = estados[1]["-"]
-			elsif estado_a == 8
-				estado_a = estados[8]["-"]
+			if @estado_atual == 1
+				@estado_atual = estados[1]["-"]
+			elsif @estado_atual == 8
+				@estado_atual = estados[8]["-"]
 			else
-				estado_a = -1
+				@estado_atual = -1
 			end
 		else
 			break
@@ -175,7 +183,7 @@ def automato_simbolos(entrada)
     end 
 
 	estados_finais = [2,3,4,5,6,7,8]
-    if estados_finais.include?(estado_a)
+    if estados_finais.include?(@estado_atual)
         puts "Cadeia reconhecida"
     else
         puts "Cadeia não reconhecida"
@@ -195,69 +203,69 @@ def automato_comentario(entrada)
         10=> {"-" => 7, "Q" => 9},
     }
 
-    estado_a = 1
+    @estado_atual = 1
 
     entrada.chars.each do |i|
         next if i.strip.empty? && i != "\n"
-        printa_char(i,estado_a)
-        case estado_a
+        printa_char(i,@estado_atual)
+        case @estado_atual
         when 1
             if i == "@"
-				estado_a = estados[1]["@"]
+				@estado_atual = estados[1]["@"]
             elsif i == "/"
-				estado_a = estados[1]["/"]
+				@estado_atual = estados[1]["/"]
             elsif i == "-"
-				estado_a = estados[1]["-"]
+				@estado_atual = estados[1]["-"]
             end
         when 2
             if i == "@"
-				estado_a = estados[2]["@"]
+				@estado_atual = estados[2]["@"]
 			elsif 
-				estado_a = 2
+				@estado_atual = 2
             end
         when 3
             if i == "\n"
-				estado_a = estados[3]["\n"]
+				@estado_atual = estados[3]["\n"]
                 flag_coment = 1
 			elsif 
-				estado_a = estados[3]["Q"]
+				@estado_atual = estados[3]["Q"]
             end
         when 4
             if i == "/"
-				estado_a = estados[4]["/"]
+				@estado_atual = estados[4]["/"]
 			elsif 
-				estado_a = 4
+				@estado_atual = 4
             end
         when 5
             if i == "/"
-				estado_a = estados[5]["/"]
+				@estado_atual = estados[5]["/"]
 			elsif 
-				estado_a = estados[5]["Q"]
+				@estado_atual = estados[5]["Q"]
             end
         when 6
             if i == "/"
-				estado_a = estados[6]["/"]
+				@estado_atual = estados[6]["/"]
                 flag_coment = 1
 			elsif 
-				estado_a = estados[6]["Q"]
+				@estado_atual = estados[6]["Q"]
             end
         when 8
             if i == ">"
-				estado_a = estados[8][">"]
+				@estado_atual = estados[8][">"]
 			elsif 
-				estado_a = 8
+				@estado_atual = 8
             end 
         when 9
             if i == "<"
-				estado_a = estados[9]["<"]
+				@estado_atual = estados[9]["<"]
 			elsif 
-				estado_a = estados[9]["Q"]
+				@estado_atual = estados[9]["Q"]
             end 
         when 10
             if i == "-"
-				estado_a = estados[10]["-"]
+				@estado_atual = estados[10]["-"]
 			elsif 
-				estado_a = estados[10]["Q"]
+				@estado_atual = estados[10]["Q"]
             end
         else
             break
@@ -265,7 +273,7 @@ def automato_comentario(entrada)
     end
 
     estados_finais = [7]
-    if estados_finais.include?(estado_a)
+    if estados_finais.include?(@estado_atual)
         puts "Cadeia reconhecida"
     else
         puts "Cadeia não reconhecida"
