@@ -1,4 +1,4 @@
-def automato_numerico(char,buffer)
+def automato_numerico(char)
 
     estados = {
         1=> {"d"=> 5, "-" => 6},
@@ -8,63 +8,68 @@ def automato_numerico(char,buffer)
         8=> {"d"=> 8},
     }
 
+    #puts char
+    #puts @estado_atual
     case @estado_atual
     when 1 
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[1]["d"]
-            buffer << char   
+            
+            @buffer << char  
+            puts @buffer 
+            puts @estado_atual
         elsif char == "-"
             @estado_atual = estados[1]["-"]
-            buffer << char
+            @buffer << char
         else
-            puts buffer
-            limpa_lexema(buffer)
-            @flag_aut = 1
+            puts @buffer
+            limpa_lexema(@buffer)
+            @estado_atual = 1
         end
     when 5       
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[5]["d"]
-            buffer << char
+            @buffer << char
             
         elsif char == ","
             @estado_atual = estados[5][","]
-            buffer << char
+            @buffer << char
         else
-            puts buffer
-            limpa_lexema(buffer)
-            @flag_aut = 1
+            puts @buffer
+            limpa_lexema(@buffer)
+            @estado_atual = 1
         end
     when 6       
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[6]["d"]
-            buffer << char
+            @buffer << char
         else
-            puts buffer
-            limpa_lexema(buffer)
-            @flag_aut = 1
+            puts @buffer
+            limpa_lexema(@buffer)
+            @estado_atual = 1
         end  
     when 7       
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[7]["d"]
-            buffer << char 
+            @buffer << char 
         else
-            puts buffer
-            limpa_lexema(buffer)
-            @flag_aut = 1
+            puts @buffer
+            limpa_lexema(@buffer)
+            @estado_atual = 1
         end
     when 8
         if char.match?(/[[:digit:]]/)
             @estado_atual= estados[8]["d"]
-            buffer << char
+            @buffer << char
         elsif !char.match?(/[[:digit:]]/)
-            puts buffer
-            limpa_lexema(buffer)
-            @flag_aut = 1
+            puts @buffer
+            limpa_lexema(@buffer)
+            @estado_atual = 1
         end
     end  
 end
 
-def automato_identificador(i,buffer)
+def automato_identificador(i)
     estados = {
         1=> {"l/L"=> 2},
         2=> {"_/~"=> 4, "l/L/d"=> 3},
@@ -72,7 +77,7 @@ def automato_identificador(i,buffer)
         4=> {"l/L/d"=> 3}
     }
 
-
+    puts "passou aqui"
     case @estado_atual
     when 1
         if i.match?(/[a-zA-Z]/)
