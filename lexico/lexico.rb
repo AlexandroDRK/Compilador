@@ -9,6 +9,8 @@ class Lexico
     @estado_atual = 1
     @buffer = ""
     @fin_token = 0
+    @estados_finais = [5,7,8]
+    @lock_aut = 0
   end
 
   def tokenize
@@ -16,17 +18,23 @@ class Lexico
     index = 0
     while index < @input.length
       i = @input[index]
-      automato_numerico(i)
-      automato_identificador(i) 
+      if @lock_aut < 1
+        automato_numerico(i)
+      elsif @lock_aut < 2
+        automato_identificador(i)
+      end
+
       if @fin_token == 1
-        puts @buffer
-        @fin_token = 0
-        @buffer = ""
+        if @estados_finais.include?(@estado_atual)
+          puts @buffer
+          @fin_token = 0
+          @buffer = ""
+        end
       end
       index += 1
     end
   end
 end
-  
+
 lexer = Lexico.new("fonte.txt")
 lexer.tokenize

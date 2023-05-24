@@ -9,44 +9,48 @@ def automato_numerico(char)
     }
 
     case @estado_atual
-    when 1 
+    when 1
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[1]["d"]
-            @buffer << char  
+            @buffer << char
         elsif char == "-"
             @estado_atual = estados[1]["-"]
             @buffer << char
         else
             @estado_atual = 1
             @fin_token = 1
+            @lock_aut = 1
         end
-    when 5       
+    when 5
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[5]["d"]
             @buffer << char
-            
+
         elsif char == ","
             @estado_atual = estados[5][","]
             @buffer << char
         else
             @estado_atual = 1
             @fin_token = 1
+            @lock_aut = 1
         end
-    when 6       
+    when 6
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[6]["d"]
             @buffer << char
         else
             @estado_atual = 1
             @fin_token = 1
-        end  
-    when 7       
+            @lock_aut = 1
+        end
+    when 7
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[7]["d"]
-            @buffer << char 
+            @buffer << char
         else
             @estado_atual = 1
             @fin_token = 1
+            @lock_aut = 1
         end
     when 8
         if char.match?(/[[:digit:]]/)
@@ -55,8 +59,9 @@ def automato_numerico(char)
         elsif !char.match?(/[[:digit:]]/)
             @estado_atual = 1
             @fin_token = 1
+            @lock_aut = 1
         end
-    end  
+    end
 end
 
 def automato_identificador(char)
@@ -88,7 +93,7 @@ def automato_identificador(char)
         else
             @estado_atual = 1
             @fin_token = 1
-        end 
+        end
     when 3
         if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[3]["l/L/d"]
@@ -96,7 +101,7 @@ def automato_identificador(char)
         elsif !char.match?(/[a-zA-Z0-9]/)
             @estado_atual = 1
             @fin_token = 1
-        end 
+        end
     when 4
         if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[4]["l/L/d"]
@@ -104,7 +109,7 @@ def automato_identificador(char)
         elsif !char.match?(/[a-zA-Z0-9]/)
             @estado_atual = 1
             @fin_token = 1
-        end 
+        end
     end
 end
 
@@ -114,10 +119,10 @@ def automato_simbolos(entrada)
         1=> {[";", ",", ".", "*", "/", "@", "(", ")", "{", "}"]=> 2, "<" => 5,":"=> 3, ">" => 4, "=" => 6, "+" => 7, "-" => 8},
         3=> {"="=> 6},
         4=> {"="=> 6},
-        5=> {[">","="]=> 6}, 
-		  7=> {"+"=> 2}, 
+        5=> {[">","="]=> 6},
+		  7=> {"+"=> 2},
         8=> {"-"=> 6}
-    }  
+    }
 
 	 estado1 = [";", ",", ".", "*", "/", "@", "(", ")", "{", "}"]
 	 estado5 = [">","="]
@@ -164,7 +169,7 @@ def automato_simbolos(entrada)
 			else
 				@estado_atual = -1
 			end
-		when /[<]/	
+		when /[<]/
 			if @estado_atual == 1
 				@estado_atual = estados[1]["<"]
 			else
@@ -188,8 +193,8 @@ def automato_simbolos(entrada)
 			end
 		else
 			break
-		end 
-    end 
+		end
+    end
 
 	estados_finais = [2,3,4,5,6,7,8]
     if estados_finais.include?(@estado_atual)
@@ -205,7 +210,7 @@ def automato_comentario(entrada)
         2=> {"@"=> 3},
         3=> {"Q"=> 3, "\n" => 7},
         4=> {"/"=> 5},
-        5=> {"/"=> 6, "Q" => 5}, 
+        5=> {"/"=> 6, "Q" => 5},
         6=> {"/"=> 7, "Q" => 5},
         8=> {">" => 9},
         9=> {"Q" => 9, "<" => 10},
@@ -229,56 +234,56 @@ def automato_comentario(entrada)
         when 2
             if i == "@"
 				@estado_atual = estados[2]["@"]
-			elsif 
+			elsif
 				@estado_atual = 2
             end
         when 3
             if i == "\n"
 				@estado_atual = estados[3]["\n"]
                 flag_coment = 1
-			elsif 
+			elsif
 				@estado_atual = estados[3]["Q"]
             end
         when 4
             if i == "/"
 				@estado_atual = estados[4]["/"]
-			elsif 
+			elsif
 				@estado_atual = 4
             end
         when 5
             if i == "/"
 				@estado_atual = estados[5]["/"]
-			elsif 
+			elsif
 				@estado_atual = estados[5]["Q"]
             end
         when 6
             if i == "/"
 				@estado_atual = estados[6]["/"]
                 flag_coment = 1
-			elsif 
+			elsif
 				@estado_atual = estados[6]["Q"]
             end
         when 8
             if i == ">"
 				@estado_atual = estados[8][">"]
-			elsif 
+			elsif
 				@estado_atual = 8
-            end 
+            end
         when 9
             if i == "<"
 				@estado_atual = estados[9]["<"]
-			elsif 
+			elsif
 				@estado_atual = estados[9]["Q"]
-            end 
+            end
         when 10
             if i == "-"
 				@estado_atual = estados[10]["-"]
-			elsif 
+			elsif
 				@estado_atual = estados[10]["Q"]
             end
         else
             break
-        end     
+        end
     end
 
     estados_finais = [7]
@@ -293,4 +298,4 @@ def printa_char(char,estado)
     puts(estado.to_s << " : " << char)
 end
 
-#automato_comentario(entrada) 
+#automato_comentario(entrada)
