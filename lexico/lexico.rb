@@ -11,8 +11,10 @@ class Lexico
   end
 
   def tokenize
-    @input.chars.each do |i|
+    #@input.chars.each do |i|
+    (0...@input.length).each do |index|
       #next if i.strip.empty?
+      i = @input[index]
       #if i.match?(/[0-9]/)
       automato_numerico(i)
       #elsif i.match?(/[a-zA-Z0-9]/) or i.match?(/[_~]/) 
@@ -22,12 +24,14 @@ class Lexico
      #end
     end
 
+=begin
 		estados_finais = [2,3,4,5]
 		if estados_finais.include?(@estado_atual)
 			puts "Cadeia reconhecida"
 		else
 			puts "Cadeia não reconhecida"
 		end
+=end
   end
 
   def limpa_lexema(lexema)

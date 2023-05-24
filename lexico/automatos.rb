@@ -14,10 +14,7 @@ def automato_numerico(char)
     when 1 
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[1]["d"]
-            
             @buffer << char  
-            puts @buffer 
-            puts @estado_atual
         elsif char == "-"
             @estado_atual = estados[1]["-"]
             @buffer << char
@@ -53,7 +50,6 @@ def automato_numerico(char)
             @estado_atual = estados[7]["d"]
             @buffer << char 
         else
-            puts @buffer
             limpa_lexema(@buffer)
             @estado_atual = 1
         end
