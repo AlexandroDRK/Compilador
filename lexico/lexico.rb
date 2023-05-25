@@ -9,7 +9,8 @@ class Lexico
     @estado_atual = 1
     @buffer = ""
     @fin_token = 0
-    @estados_finais = [5,7,8]
+    @estados_finais = [3,5,7,8]
+    puts @lock_aut
     @lock_aut = 0
   end
 
@@ -18,14 +19,19 @@ class Lexico
     index = 0
     while index < @input.length
       i = @input[index]
-      if @lock_aut < 1
+      estado_rec = @estado_atual
+
+      if @lock_aut == 0
+        puts "@lock_aut - #{i}"
         automato_numerico(i)
-      elsif @lock_aut < 2
+      elsif @lock_aut == 1
         automato_identificador(i)
+      elsif @lock_aut == 2
+        automato_simbolos(i)
       end
 
       if @fin_token == 1
-        if @estados_finais.include?(@estado_atual)
+        if @estados_finais.include?(estado_rec)
           puts @buffer
           @fin_token = 0
           @buffer = ""

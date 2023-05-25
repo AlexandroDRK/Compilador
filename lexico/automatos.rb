@@ -61,6 +61,9 @@ def automato_numerico(char)
             @fin_token = 1
             @lock_aut = 1
         end
+    else
+        @estado_atual = 1
+        @lock_aut = 1
     end
 end
 
@@ -72,8 +75,6 @@ def automato_identificador(char)
         4=> {"l/L/d"=> 3}
     }
 
-    #puts ("caracter:  #{char}")
-    #puts ("@estado_atual: #{@estado_atual}")
     case @estado_atual
     when 1
         if char.match?(/[a-zA-Z]/)
@@ -82,6 +83,7 @@ def automato_identificador(char)
         else
             @estado_atual = 1
             @fin_token = 1
+            @lock_aut = 2
         end
     when 2
         if char.match?(/[a-zA-Z0-9]/)
@@ -93,6 +95,7 @@ def automato_identificador(char)
         else
             @estado_atual = 1
             @fin_token = 1
+            @lock_aut = 2
         end
     when 3
         if char.match?(/[a-zA-Z0-9]/)
@@ -101,6 +104,7 @@ def automato_identificador(char)
         elsif !char.match?(/[a-zA-Z0-9]/)
             @estado_atual = 1
             @fin_token = 1
+            @lock_aut = 2
         end
     when 4
         if char.match?(/[a-zA-Z0-9]/)
@@ -109,12 +113,13 @@ def automato_identificador(char)
         elsif !char.match?(/[a-zA-Z0-9]/)
             @estado_atual = 1
             @fin_token = 1
+            @lock_aut = 2
         end
     end
 end
 
 
-def automato_simbolos(entrada)
+def automato_simbolos(char)
     estados = {
         1=> {[";", ",", ".", "*", "/", "@", "(", ")", "{", "}"]=> 2, "<" => 5,":"=> 3, ">" => 4, "=" => 6, "+" => 7, "-" => 8},
         3=> {"="=> 6},
@@ -124,83 +129,85 @@ def automato_simbolos(entrada)
         8=> {"-"=> 6}
     }
 
-	 estado1 = [";", ",", ".", "*", "/", "@", "(", ")", "{", "}"]
-	 estado5 = [">","="]
+    puts ("caracter:  #{char}")
+    puts ("@estado_atual: #{@estado_atual}")
 
+    estado1 = [";", ",", ".", "*", "/", "@", "(", ")", "{", "}"]
+    estado5 = [">","="]
 
-    @estado_atual = 1
-
-    entrada.chars.each do |i|
-        next if i.strip.empty?
-        case i
-		when *estado1
-			if @estado_atual == 1
-				@estado_atual = estados[1][estados[1].keys.first]
-			else
-				@estado_atual = -1
-			end
-		when /[:]/
-			if @estado_atual == 1
-				@estado_atual = estados[1][":"]
-			else
-				@estado_atual = -1
-			end
-		when /[=]/
-			if @estado_atual == 1
-				@estado_atual = estados[1]["="]
-			elsif @estado_atual == 3
-				@estado_atual = estados[3]["="]
-			elsif @estado_atual == 4
-				@estado_atual = estados[4]["="]
-			elsif @estado_atual == 5
-				@estado_atual = estados[5][estados[5].keys.first]
-			elsif @estado_atual == 7
-				@estado_atual = estados[7]["="]
-			elsif @estado_atual == 8
-				@estado_atual = estados[8]["="]
-			else
-				@estado_atual = -1
-			end
-		when /[>]/
-			if @estado_atual == 1
-				@estado_atual = estados[1][">"]
-			elsif @estado_atual == 5
-				@estado_atual = estados[5][estados[5].keys.first]
-			else
-				@estado_atual = -1
-			end
-		when /[<]/
-			if @estado_atual == 1
-				@estado_atual = estados[1]["<"]
-			else
-				@estado_atual = -1
-			end
-		when /[+]/
-			if @estado_atual == 1
-				@estado_atual = estados[1]["+"]
-			elsif @estado_atual == 7
-				@estado_atual = estados[7]["+"]
-			else
-				@estado_atual = -1
-			end
-		when /[-]/
-			if @estado_atual == 1
-				@estado_atual = estados[1]["-"]
-			elsif @estado_atual == 8
-				@estado_atual = estados[8]["-"]
-			else
-				@estado_atual = -1
-			end
-		else
-			break
-		end
-    end
-
-	estados_finais = [2,3,4,5,6,7,8]
-    if estados_finais.include?(@estado_atual)
-        puts "Cadeia reconhecida"
-    else
-        puts "Cadeia não reconhecida"
+    case char
+    when *estado1
+        if @estado_atual == 1
+            @estado_atual = estados[1][estados[1].keys.first]
+        else
+            @estado_atual = 1
+            @fin_token = 1
+            @lock_aut = 3
+        end
+    when /[:]/
+        if @estado_atual == 1
+            @estado_atual = estados[1][":"]
+        else
+            @estado_atual = 1
+            @fin_token = 1
+            @lock_aut = 3
+        end
+    when /[=]/
+        if @estado_atual == 1
+            @estado_atual = estados[1]["="]
+        elsif @estado_atual == 3
+            @estado_atual = estados[3]["="]
+        elsif @estado_atual == 4
+            @estado_atual = estados[4]["="]
+        elsif @estado_atual == 5
+            @estado_atual = estados[5][estados[5].keys.first]
+        elsif @estado_atual == 7
+            @estado_atual = estados[7]["="]
+        elsif @estado_atual == 8
+            @estado_atual = estados[8]["="]
+        else
+            @estado_atual = 1
+            @fin_token = 1
+            @lock_aut = 3
+        end
+    when /[>]/
+        if @estado_atual == 1
+            @estado_atual = estados[1][">"]
+        elsif @estado_atual == 5
+            @estado_atual = estados[5][estados[5].keys.first]
+        else
+            @estado_atual = 1
+            @fin_token = 1
+            @lock_aut = 3
+        end
+    when /[<]/
+        if @estado_atual == 1
+            @estado_atual = estados[1]["<"]
+        else
+            @estado_atual = 1
+            @fin_token = 1
+            @lock_aut = 3
+        end
+    when /[+]/
+        if @estado_atual == 1
+            @estado_atual = estados[1]["+"]
+        elsif @estado_atual == 7
+            @estado_atual = estados[7]["+"]
+        else
+            @estado_atual = 1
+            @fin_token = 1
+            @lock_aut = 3
+        end
+    when /[-]/
+        if @estado_atual == 1
+            @estado_atual = estados[1]["-"]
+        elsif @estado_atual == 8
+            @estado_atual = estados[8]["-"]
+        else
+            @estado_atual = 1
+            @fin_token = 1
+            @lock_aut = 3
+        end
     end
 end
 
