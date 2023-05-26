@@ -12,13 +12,17 @@ class Lexico
     @erro = false
     @classe = ""
     @estados_finais = [3,5,7,8,24]
-
+    @linha_atual = 1
   end
 
   def gerar_token
     @input.chars.each do |i|
       #next if i == " " or i == "\t"
       automato(i)
+
+      if i == "\n"
+        @linha_atual += 1
+      end
       
       if @fim == true
 

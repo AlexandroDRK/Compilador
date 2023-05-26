@@ -1,7 +1,7 @@
 program teste{
     a~a-1,23 
     --for.
-    ++--
+    ++(--)
     @@aaaaaa
 //
 aaaaa
@@ -10,8 +10,18 @@ aaaaa
 aaa
 
 }
-aaa-+c
+aaa-:c ,
 
 ->
-     oenceiwpe
-                <-
+
+oenceiwpe    ++++
+
+<-
+
+@@aaaa@@
+
+****
+&
+2abc_8
+aaaa begin end
+

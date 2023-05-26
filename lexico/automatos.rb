@@ -74,7 +74,7 @@ def automato(char)
             @estado_atual = estados[3]["l/L/d"]
             @token << char
         elsif char == "_" or char == "~"
-            puts "Identificador não reconhecido"
+            puts "Linha: #{@linha_atual} - Identificador não reconhecido" 
             @estado = -1
             @fim = true
             @erro = true
@@ -87,8 +87,6 @@ def automato(char)
             @token << char
         elsif !char.match?(/[a-zA-Z0-9]/)
             @estado_atual = 1
-            @fin_token = 1
-            @lock_aut = 2
         end
     when 5
         if char.match?(/[[:digit:]]/)
@@ -109,7 +107,7 @@ def automato(char)
             @estado_atual = estados[6]["-"]
             @token << char
         elsif char == ">"
-            @estado_atual = estados[22][">"]
+            @estado_atual = estados[6][">"]
             @token << char
         else
             @fim = true
@@ -146,6 +144,8 @@ def automato(char)
             @estado_atual = estados[11]["Q"]
             @token << char
         end
+    when 12
+        @fim = true
     when 13
         if char == "/"
             @estado_atual = estados[13]["/"]
@@ -192,6 +192,8 @@ def automato(char)
         if char == "+"
             @estado_atual = estados[20]["+"]
             @token << char
+        else
+            @fim = true
         end
     when 21
         @fim = true
@@ -200,6 +202,8 @@ def automato(char)
             @estado_atual = estados[22][">"]
         elsif char == ":"
             @estado_atual = estados[22][":"]
+        else
+            @fim = true
         end
     when 23
         if char == "="
