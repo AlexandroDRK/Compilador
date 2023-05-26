@@ -56,8 +56,11 @@ def automato(char)
             @estado_atual = estados[1][">"] 
         elsif char == "<" 
             @estado_atual = estados[1]["<"] 
-        else
+        elsif char == " " or char == "\n" 
             @fim = true
+        else
+            puts "Linha: #{@linha_atual} - Token não reconhecido" 
+            @erro = true
         end
     when 2
         if char.match?(/[a-zA-Z0-9]/)
@@ -165,7 +168,6 @@ def automato(char)
         if char == "/"
             @estado_atual = estados[15]["/"]
             @token << char
-            puts @estado_atual
         elsif char != "/"
             @estado_atual = estados[15]["Q"]
             @token << char
