@@ -13,7 +13,7 @@ def automato(char)
         11=> {"-" => 12, "Q" => 10},
         13=> {"/"=> 14},
         14=> {"/"=> 15,"Q"=> 14},
-        15=> {"Q"=> 14, "/"=> 15},
+        15=> {"Q"=> 14, "/"=> 16},
         17=> {"@"=> 18},
         18=> {"Q"=> 18, "\n" => 19},
         20=> {"+"=> 21},
@@ -21,30 +21,35 @@ def automato(char)
         24=> {"+"=> 21},
     }
 
-    simbolos = [";", ",", ".", "*", "/", "@", "(", ")", "{", "}"]
+    simbolos = [";", ",", ".", "*", "(", ")", "{", "}"]
 
     case @estado_atual
     when 1
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[1]["d"]
-            @buffer << char
+            @token << char
+            puts @token
         elsif char == "-"
             @estado_atual = estados[1]["-"]
-            @buffer << char
+            @token << char
         elsif char == "+"
             @estado_atual = estados[1]["+"]
-            @buffer << char
+            @token << char
         elsif char.match?(/[a-zA-Z]/)
             @estado_atual = estados[1]["l/L"]
-            @buffer << char
+            @token << char
         elsif char == "@"
             @estado_atual = estados[1]["@"]
+            @token << char
         elsif char == "/"
             @estado_atual = estados[1]["/"]
+            @token << char
         elsif char == "-"
             @estado_atual = estados[1]["-"] 
-        elsif char in simbolos
+            @token << char
+        elsif simbolos.include?(char)
             @estado_atual = estados[1]["simb"] 
+            @token << char
         elsif char == ":" 
             @estado_atual = estados[1][":"]  
         elsif char == ">" 
@@ -52,35 +57,34 @@ def automato(char)
         elsif char == "<" 
             @estado_atual = estados[1]["<"] 
         else
-            @estado_atual = 1
-            @fin_token = 1
-            @lock_aut = 1
+            @fim = true
         end
     when 2
         if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[2]["l/L/d"]
-            @buffer << char
+            @token << char 
         elsif char == "_" or char == "~"
             @estado_atual = estados[2]["_/~"]
-            @buffer << char
+            @token << char   
         else
-            @estado_atual = 1
-            @fin_token = 1
-            @lock_aut = 2
+            @fim = true
         end
     when 3
         if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[3]["l/L/d"]
-            @buffer << char
-        elsif !char.match?(/[a-zA-Z0-9]/)
-            @estado_atual = 1
-            @fin_token = 1
-            @lock_aut = 2
+            @token << char
+        elsif char == "_" or char == "~"
+            puts "Identificador não reconhecido"
+            @estado = -1
+            @fim = true
+            @erro = true
+        else 
+            @fim = true
         end
     when 4
         if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[4]["l/L/d"]
-            @buffer << char
+            @token << char
         elsif !char.match?(/[a-zA-Z0-9]/)
             @estado_atual = 1
             @fin_token = 1
@@ -89,86 +93,108 @@ def automato(char)
     when 5
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[5]["d"]
-            @buffer << char
+            @token << char
 
         elsif char == ","
             @estado_atual = estados[5][","]
-            @buffer << char
+            @token << char
         else
-            @estado_atual = 1
-            @fin_token = 1
-            @lock_aut = 1
+            @fim = true
         end
     when 6
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[6]["d"]
-            @buffer << char
+            @token << char
+        elsif char == "-"
+            @estado_atual = estados[6]["-"]
+            @token << char
+        elsif char == ">"
+            @estado_atual = estados[22][">"]
+            @token << char
         else
-            @estado_atual = 1
-            @fin_token = 1
-            @lock_aut = 1
+            @fim = true
         end
     when 7
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[7]["d"]
-            @buffer << char
+            @token << char
         else
-            @estado_atual = 1
-            @fin_token = 1
-            @lock_aut = 1
+            @fim = true
         end
     when 8
         if char.match?(/[[:digit:]]/)
             @estado_atual= estados[8]["d"]
-            @buffer << char
+            @token << char
         elsif !char.match?(/[[:digit:]]/)
-            @estado_atual = 1
-            @fin_token = 1
-            @lock_aut = 1
+            @fim = true
         end
+    when 9
+        @fim = true
     when 10
         if char == "<" 
             @estado_atual = estados[10]["<"]
+            @token << char
         elsif
             @estado_atual = estados[10]["Q"]
+            @token << char
         end
     when 11 
         if char == "-"
             @estado_atual = estados[11]["-"]
+            @token << char
         elsif char != "-"
             @estado_atual = estados[11]["Q"]
+            @token << char
         end
     when 13
         if char == "/"
-            @estado_atual = estados[13]["/"] 
+            @estado_atual = estados[13]["/"]
+            @token << char
+        else
+            @fim = true
         end   
     when 14
         if char == "/"
             @estado_atual = estados[14]["/"]
+            @token << char
         elsif char != "/"
             @estado_atual = estados[14]["Q"]
+            @token << char
         end
     when 15
         if char == "/"
             @estado_atual = estados[15]["/"]
+            @token << char
+            puts @estado_atual
         elsif char != "/"
             @estado_atual = estados[15]["Q"]
+            @token << char
         end
+    when 16 
+        @fim = true
     when 17
         if char == "@"
             @estado_atual = estados[17]["@"]
+            @token << char
+        else
+            @fim = true
         end
     when 18
         if char == "\n"
             @estado_atual = estados[18]["\n"]
-            flag_coment = 1
         elsif char != "\n"
             @estado_atual = estados[18]["Q"]
+            @token << char
         end
+    when 19
+        @fim = true
     when 20
         if char == "+"
             @estado_atual = estados[20]["+"]
+            @token << char
         end
+    when 21
+        @fim = true
     when 22
         if char == ">"
             @estado_atual = estados[22][">"]
@@ -178,9 +204,14 @@ def automato(char)
     when 23
         if char == "="
             @estado_atual = estados[23]["="]
+        else
+            @fim = true
         end
-    else
-        @estado_atual = 1
-        @lock_aut = 1
+    when 24
+        @fim = true
     end
+end
+
+def puts_debug(char, estado_atual)
+    puts "Caracter: #{char} estado atual: #{estado_atual}"
 end
