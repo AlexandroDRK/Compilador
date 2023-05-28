@@ -50,7 +50,7 @@ class Lexico
         when 18, 21
           @classe= 'comentFim'
           print_saida(@classe, @token)
-        when 4,10,11,14,15,18
+        when -1
           @classe= 'erro'
         end
 
@@ -64,6 +64,11 @@ class Lexico
           automato(i)
           @token = i
         end
+      else
+        unless i == "\n"
+          #@token += i
+          buffer = "" 
+        end 
       end
     end
   end
@@ -95,7 +100,7 @@ class Lexico
       puts "Início de Comentário: #{token}"
     when "comentFim"
       puts "Fim de Comentário: #{token}"
-    when "erro"
+    else
       puts "ERRO: Token inválido"
     end
   end
