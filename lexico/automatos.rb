@@ -59,7 +59,7 @@ def automato(char)
         elsif char == " " or char == "\n" 
             @fim = true
         else
-            puts "Linha: #{@linha_atual} - Token não reconhecido" 
+            puts "Linha: #{@linha_atual} - Identificador #{@token} não reconhecido" 
             @erro = true
         end
     when 2
@@ -77,8 +77,7 @@ def automato(char)
             @estado_atual = estados[3]["l/L/d"]
             @token << char
         elsif char == "_" or char == "~"
-            puts "Linha: #{@linha_atual} - Identificador não reconhecido" 
-            @estado = -1
+            puts "Linha: #{@linha_atual} - Identificador #{@token} não reconhecido" 
             @fim = true
             @erro = true
         else 
@@ -89,7 +88,9 @@ def automato(char)
             @estado_atual = estados[4]["l/L/d"]
             @token << char
         elsif !char.match?(/[a-zA-Z0-9]/)
-            @estado_atual = 1
+            puts "Linha: #{@linha_atual} - Identificador #{@token} não reconhecido" 
+            @fim = true
+            @erro = true
         end
     when 5
         if char.match?(/[[:digit:]]/)

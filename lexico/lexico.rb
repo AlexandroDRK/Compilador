@@ -64,11 +64,6 @@ class Lexico
           automato(i)
           @token = i
         end
-      else
-        unless i == "\n"
-          #@token += i
-          buffer = "" 
-        end 
       end
     end
   end
@@ -100,7 +95,7 @@ class Lexico
       puts "Início de Comentário: #{token}"
     when "comentFim"
       puts "Fim de Comentário: #{token}"
-    else
+    when "erro"
       puts "ERRO: Token inválido"
     end
   end
