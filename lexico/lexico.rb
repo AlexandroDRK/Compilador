@@ -11,7 +11,6 @@ class Lexico
     @token = ""
     @erro = false
     @classe = ""
-    @estados_finais = [3,5,7,8,24]
     @linha_atual = 1
   end
 
@@ -23,36 +22,16 @@ class Lexico
       if i == "\n"
         @linha_atual += 1
       end
+
+      if @estado_atual == -1 
+        @token << i
+        testa_estado(@estado_atual)
+        print_saida(@classe,@token)
+      end 
       
       if @fim == true
 
-        if @erro == true
-          exit
-          break
-        end
-
-        case @estado_atual
-        when 2, 3
-          verifica_palavra_reservada(@token, $pr)
-          print_saida(@classe, @token)
-        when 5, 7, 8
-          @classe= 'dig'
-          print_saida(@classe, @token)
-        when 6,9,13,17
-          @classe= 'simb'
-          print_saida(@classe, @token)
-        when 14
-          @classe= 'comentLinha'
-          print_saida(@classe, @token)
-        when 20..24
-          @classe= 'simb'
-          print_saida(@classe, @token)
-        when 18, 21
-          @classe= 'comentFim'
-          print_saida(@classe, @token)
-        when -1
-          @classe= 'erro'
-        end
+        testa_estado(@estado_atual)
 
         if i == "\n" || i == ' '
           @estado_atual = 1
@@ -65,6 +44,38 @@ class Lexico
           @token = i
         end
       end
+    end
+
+    if !@token.empty?
+      testa_estado(@estado_atual)
+      if @classe == "erro"
+        print_saida(@classe,@token)
+      end
+    end
+  end
+
+  def testa_estado(estado_atual)
+    case estado_atual
+    when 2, 3
+      verifica_palavra_reservada(@token, $pr)
+      print_saida(@classe, @token)
+    when 5,8
+      @classe= 'dig'
+      print_saida(@classe, @token)
+    when 6,9,13,17
+      @classe= 'simb'
+      print_saida(@classe, @token)
+    when 14
+      @classe= 'comentLinha'
+      print_saida(@classe, @token)
+    when 20..24
+      @classe= 'simb'
+      print_saida(@classe, @token)
+    when 18, 21
+      @classe= 'comentFim'
+      print_saida(@classe, @token)
+    else 
+      @classe= 'erro'
     end
   end
 
@@ -96,7 +107,8 @@ class Lexico
     when "comentFim"
       puts "Fim de Comentário: #{token}"
     when "erro"
-      puts "ERRO: Token inválido"
+      puts "Linha: #{@linha_atual} - token #{@token} não reconhecido" 
+      exit
     end
   end
 end

@@ -28,7 +28,6 @@ def automato(char)
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[1]["d"]
             @token << char
-            puts @token
         elsif char == "-"
             @estado_atual = estados[1]["-"]
             @token << char
@@ -59,8 +58,9 @@ def automato(char)
         elsif char == " " or char == "\n" 
             @fim = true
         else
-            puts "Linha: #{@linha_atual} - Identificador #{@token} não reconhecido" 
+            puts "Linha: #{@linha_atual} - símbolo #{char} não reconhecido" 
             @erro = true
+            @estado_atual = -1
         end
     when 2
         if char.match?(/[a-zA-Z0-9]/)
@@ -68,7 +68,7 @@ def automato(char)
             @token << char 
         elsif char == "_" or char == "~"
             @estado_atual = estados[2]["_/~"]
-            @token << char   
+            @token << char  
         else
             @fim = true
         end
@@ -77,9 +77,9 @@ def automato(char)
             @estado_atual = estados[3]["l/L/d"]
             @token << char
         elsif char == "_" or char == "~"
-            puts "Linha: #{@linha_atual} - Identificador #{@token} não reconhecido" 
             @fim = true
             @erro = true
+            @estado_atual = -1
         else 
             @fim = true
         end
@@ -87,10 +87,9 @@ def automato(char)
         if char.match?(/[a-zA-Z0-9]/)
             @estado_atual = estados[4]["l/L/d"]
             @token << char
-        elsif !char.match?(/[a-zA-Z0-9]/)
-            puts "Linha: #{@linha_atual} - Identificador #{@token} não reconhecido" 
+        elsif !char.match?(/[a-zA-Z0-9]/) 
             @fim = true
-            @erro = true
+            @estado_atual = -1
         end
     when 5
         if char.match?(/[[:digit:]]/)
@@ -120,8 +119,9 @@ def automato(char)
         if char.match?(/[[:digit:]]/)
             @estado_atual = estados[7]["d"]
             @token << char
-        else
+        elsif !char.match?(/[[:digit:]]/)
             @fim = true
+            @estado_atual = -1
         end
     when 8
         if char.match?(/[[:digit:]]/)
