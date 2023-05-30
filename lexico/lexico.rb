@@ -65,15 +65,15 @@ class Lexico
     when 6,9,13,17
       @classe= 'simb'
       print_saida(@classe, @token)
-    when 14
+    when 19
       @classe= 'comentLinha'
-      print_saida(@classe, @token)
+      #print_saida(@classe, @token)
     when 20..24
       @classe= 'simb'
       print_saida(@classe, @token)
-    when 18, 21
+    when 12,16
       @classe= 'comentFim'
-      print_saida(@classe, @token)
+      #print_saida(@classe, @token)
     else 
       @classe= 'erro'
     end
