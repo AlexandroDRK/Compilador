@@ -55,7 +55,7 @@ def automato(char)
             @estado_atual = estados[1][">"] 
         elsif char == "<" 
             @estado_atual = estados[1]["<"] 
-        elsif char == " " or char == "\n" 
+        elsif ["\n","\s","\t"].include?(char) 
             @fim = true
         else
             puts "Linha: #{@linha_atual} - símbolo #{char} não reconhecido" 

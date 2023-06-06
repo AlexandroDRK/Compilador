@@ -16,7 +16,6 @@ class Lexico
 
   def gerar_token
     @input.chars.each do |i|
-      #next if i == " " or i == "\t"
       automato(i)
 
       if i == "\n"
@@ -33,7 +32,7 @@ class Lexico
 
         testa_estado(@estado_atual)
 
-        if i == "\n" || i == ' '
+        if ["\n","\s","\t"].include?(i) 
           @estado_atual = 1
           @token = ''
           @fim = false
