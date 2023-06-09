@@ -1,7 +1,7 @@
 def automato(char)
 
     estados = {
-        1=> {"d"=> 5, "-" => 6, "l/L"=> 2,"simb" => 24,"<" => 23, "=" => 22, "+" => 20, "/" => 13, "@" => 17,">" => 22, ":"=> 22},
+        1=> {"d"=> 5, "-" => 6, "l/L"=> 2,"simb" => 24,"<" => 23, "+" => 20, "/" => 13, "@" => 17,">" => 22, ":"=> 22},
         2=> {"_/~"=> 4, "l/L/d"=> 3},
         3=> {"l/L/d"=> 3},
         4=> {"l/L/d"=> 3},
@@ -17,11 +17,12 @@ def automato(char)
         17=> {"@"=> 18},
         18=> {"Q"=> 18, "\n" => 19},
         20=> {"+"=> 21},
+        22=> {"="=> 24},
         23=> {"+"=> 21},
         24=> {"+"=> 21},
     }
 
-    simbolos = [";", ",", ".", "*", "(", ")", "{", "}"]
+    simbolos = [";", ",", ".", "*", "(", ")", "{", "}", "="]
 
     case @estado_atual
     when 1
@@ -50,11 +51,14 @@ def automato(char)
             @estado_atual = estados[1]["simb"] 
             @token << char
         elsif char == ":" 
-            @estado_atual = estados[1][":"]  
+            @estado_atual = estados[1][":"] 
+            @token << char 
         elsif char == ">" 
             @estado_atual = estados[1][">"] 
+            @token << char
         elsif char == "<" 
             @estado_atual = estados[1]["<"] 
+            @token << char
         elsif ["\n","\s","\t"].include?(char) 
             @fim = true
         else
@@ -201,10 +205,9 @@ def automato(char)
     when 21
         @fim = true
     when 22
-        if char == ">"
-            @estado_atual = estados[22][">"]
-        elsif char == ":"
-            @estado_atual = estados[22][":"]
+        if char == "="
+            @estado_atual = estados[22]["="]
+            @token << char
         else
             @fim = true
         end
