@@ -4,17 +4,20 @@ class Lexico
   $pr = ["program", "if", "then", "else", "while", "do", "until", "repeat", "int", "double", "char", "case","switch","end", "procedure", "function","for", "begin"]
 
   def initialize(filename)
-    file = File.open(filename,"r")
-    @input = file.read
+    @file = File.open(filename,"r")
+    @input = @file.read
     @estado_atual = 1
     @fim = false
+    @input_index = 0
     @token = ""
     @classe = ""
     @linha_atual = 1
   end
 
   def gerar_token
-    @input.chars.each do |i|
+    while @input_index < @input.length
+      i = @input[@input_index]
+      @input_index += 1
       automato(i)
 
       if i == "\n"
@@ -30,7 +33,7 @@ class Lexico
       if @fim == true
 
         testa_estado(@estado_atual)
-
+        
         if ["\n","\s","\t"].include?(i) 
           @estado_atual = 1
           @token = ''
@@ -41,15 +44,27 @@ class Lexico
           automato(i)
           @token = i
         end
+
+        token_class = @token_classe.clone
+        @token_classe.clear
+        if @token_analisado == true
+          @token_analisado = false
+          return token_class
+        end
       end
     end
 
     if !@token.empty?
       testa_estado(@estado_atual)
+      if @token_analisado == true
+        @token = ''
+        return @token_classe
+      end
       if @classe == "erro"
         print_saida(@classe,@token)
       end
     end
+    nil
   end
 
   def testa_estado(estado_atual)
@@ -91,13 +106,17 @@ class Lexico
   def print_saida(classe, token)
     case classe
     when "ident"
-      puts "Identificador: #{token}"
+      @token_analisado = true
+      @token_classe[token] = classe
     when "reser"
-      puts "Palavra Reservada: #{token}"
+      @token_analisado = true
+      @token_classe[token] = classe
     when "dig"
-      puts "Dígito: #{token}"
+      @token_analisado = true
+      @token_classe[token] = classe
     when "simb"
-      puts "Símbolo Especial: #{token}"
+      @token_analisado = true
+      @token_classe[token] = classe
     when "comentLinha"
       puts "Comentário de uma linha: #{token}"
     when "comentInicio"
@@ -115,6 +134,3 @@ class Lexico
     end
   end
 end
-
-lexer = Lexico.new("fonte.txt")
-lexer.gerar_token
