@@ -106,8 +106,13 @@ class Lexico
     when "comentFim"
       puts "Fim de Comentário: #{token}"
     when "erro"
-      puts "Linha: #{@linha_atual} - token #{@token} não reconhecido" 
-      exit
+      if !([10,11,14,15].include?(@estado_atual))
+        puts "Linha: #{@linha_atual} - token #{@token} não reconhecido" 
+        exit
+      else
+        puts "Linha: #{@linha_atual} - comentário sem finalização."
+        exit
+      end
     end
   end
 end

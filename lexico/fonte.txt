@@ -1,6 +1,6 @@
 program teste{
     a~a-1,23 
-    --for.
+    +-for.
     ++(--)
     @@aaaaaa
 //
@@ -14,17 +14,17 @@ aaa-:c ,
 
 
 
-oenceiwpe    ++++
+oenceiwpe    +++
 
 
 
 @@aaaa@@
 
 ****
-@@&
+a_a
 @@2abc_8
 aaaa begin end
 -5,54,9a9
-//aaaaa//
+//aaaaa/
 :=
 &a

@@ -62,7 +62,8 @@ def automato(char)
         elsif ["\n","\s","\t"].include?(char) 
             @fim = true
         else
-            puts "Linha: #{@linha_atual} - símbolo #{char} não reconhecido" 
+            puts "Linha: #{@linha_atual} - símbolo #{char} desconhecido" 
+            exit
             @erro = true
             @estado_atual = -1
         end
