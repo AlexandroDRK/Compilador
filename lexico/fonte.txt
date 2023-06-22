@@ -1,33 +1,26 @@
+
+a_vbd3  3,45 a_a ert; 23  ---4
+4,6,
 program teste{
     a~a-1,23 
     +-for.
-    ++(--)
+    ++(--
     @@aaaaaa
 //
 aaaaa
 //
 
-12,743<>
-
-}
->=<= -:c ,
-
-
-
-i  jx  z_teste  k12aa3 u~teste123  u_12tes3   +++
-
 
 @@aaaa@@ 
 
 ****
-a_a
+
 @@2abc_8
-aaaa begin end
--5,54,9a9
+ end
+9a9
 ->
 aaaaa<-
 :=
 switch
 case
 &
-4,,
