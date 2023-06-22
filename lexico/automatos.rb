@@ -18,8 +18,7 @@ def automato(char)
         18=> {"Q"=> 18, "\n" => 19},
         20=> {"+"=> 21},
         22=> {"="=> 24},
-        23=> {"+"=> 21},
-        24=> {"+"=> 21},
+        23=> {"="=> 24,">"=> 24}
     }
 
     simbolos = [";", ",", ".", "*", "(", ")", "{", "}", "="]
@@ -64,7 +63,6 @@ def automato(char)
         else
             puts "Linha: #{@linha_atual} - símbolo #{char} desconhecido" 
             exit
-            @erro = true
             @estado_atual = -1
         end
     when 2
@@ -83,7 +81,6 @@ def automato(char)
             @token << char
         elsif char == "_" or char == "~"
             @fim = true
-            @erro = true
             @estado_atual = -1
         else 
             @fim = true
@@ -215,6 +212,10 @@ def automato(char)
     when 23
         if char == "="
             @estado_atual = estados[23]["="]
+            @token << char
+        elsif char == ">"
+            @estado_atual = estados[23][">"]
+            @token << char
         else
             @fim = true
         end

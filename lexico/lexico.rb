@@ -9,7 +9,6 @@ class Lexico
     @estado_atual = 1
     @fim = false
     @token = ""
-    @erro = false
     @classe = ""
     @linha_atual = 1
   end
@@ -107,7 +106,7 @@ class Lexico
       puts "Fim de Comentário: #{token}"
     when "erro"
       if !([10,11,14,15].include?(@estado_atual))
-        puts "Linha: #{@linha_atual} - token #{@token} não reconhecido" 
+        puts "Linha: #{@linha_atual} - token #{@token} é inválido." 
         exit
       else
         puts "Linha: #{@linha_atual} - comentário sem finalização."
