@@ -27,5 +27,7 @@ aaaa begin end
 ->
 aaaaa<-
 :=
+switch
+case
 &
 4,,
