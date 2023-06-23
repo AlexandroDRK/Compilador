@@ -10,6 +10,7 @@ class Lexico
     @fim = false
     @input_index = 0
     @token = ""
+    @token_classe = {}
     @classe = ""
     @linha_atual = 1
   end
