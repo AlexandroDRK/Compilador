@@ -1,0 +1,7 @@
+program teste ;
+->type a = int; 
+b = boolean;
+cls = double;
+aaa = char;
+ccc = int;<-
+var int
