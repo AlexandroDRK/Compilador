@@ -6,4 +6,4 @@ aaa = char;
 ccc = int;
 var aa bb : int;
 var bb cc : char;<-
-function a(a:a;)
+function a(a:a)

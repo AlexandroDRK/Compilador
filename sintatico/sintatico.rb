@@ -165,31 +165,47 @@ class Sintatico
 
   # *10. <parametros formais> ➝ (<lista de identificadores>: <identificador> {; <lista de identificadores>:<identificador>})
   def parametros_formais
-    begin
-      @token = obter_token
-      if valor_token(@token) != "("
-        log_erro(@token,"PF02")
-      end
+    
+    @token = obter_token
+    if valor_token(@token) != "("
+      log_erro(@token,"PF01")
+    end
 
+    lista_identificadores()
+
+    if valor_token(@token) != ":"
+      log_erro(@token,"PF02")
+    end
+
+    @token = obter_token
+    if classe_token(@token) != "ident"
+      log_erro(@token,"PF03")
+    end
+
+    @token = obter_token
+    # if valor_token(@token) != ";"
+    #   log_erro(@token,"PF03")
+    # end 
+    while valor_token(@token) == ";"
+      @token = obter_token
       lista_identificadores()
 
-      if valor_token(@token) != ":"
-        log_erro(@token,"PF01")
-      end
-
       @token = obter_token
-      if classe_token(@token) != "ident"
+      if valor_token(@token) != ":"
         log_erro(@token,"PF02")
       end
+  
+      @token = obter_token
+      if classe_token(@token) != "ident"
+        log_erro(@token,"PF03")
+      end
 
       @token = obter_token
-      if valor_token(@token) != ";"
-        log_erro(@token,"PF03")
-      end 
-    end while not (classe_token(@token) != "ident")
+      break if valor_token(@token) != ";"
+    end
 
     if valor_token(@token) != ")"
-      log_erro(@token,"PF02")
+      log_erro(@token,"PF04")
     end
   end
 
@@ -199,17 +215,29 @@ class Sintatico
     if valor_token(@token) != "begin"
       log_erro(@token,"CC01")
     end
-    comando_sem_rotulo()
 
     @token = obter_token
-    if valor_token(@token) != ";"
-      log_erro(@token,"CC02")
-    end 
 
-    if valor_token(@token) != "end"
-      log_erro(@token,"CC03")
+    while comando_sem_rotulo()
+
+      @token = obter_token
+      if valor_token(@token) != ";"
+        log_erro(@token,"CC02")
+      end 
+
+      @token = obter_token
+
+      break if valor_token(@token) == "end"
     end
   end
+=begin 
+  12. <comando sem rotulo> ➝ <atribuicao> 
+  |<chamada de procedimento>
+  |<comando condicional>
+  |<comando repetitivo> 
+=end
+  def comando_sem_rotulo
+    
 
   # 13. <atribuicao> ➝ <variavel> := <expressao> 
   def atribuicao
@@ -299,6 +327,6 @@ class Sintatico
   end
 end
 
-lexer = Lexico.new("fonte.txt")
+lexer = Lexico.new("sintatico/fonte.txt")
 parser = Sintatico.new(lexer)
 parser.parse
