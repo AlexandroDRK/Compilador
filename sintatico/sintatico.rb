@@ -264,6 +264,20 @@ class Sintatico
   end
 
   # 14. <chamada de procedimento> ➝ <identificador> [ (<lista de expressoes>)] 
+  def chamada_procedimento
+    if classe_token(@token) != "ident"
+      log_erro(@token,"CF01")
+    end
+
+    @token = obter_token
+    if valor_token(@token) == "("
+      while true
+        lista_expressoes()
+        @token = obter_token
+        break if valor_token(@token) == ")"
+      end
+    end
+  end
 
   # **15. <comando condicional> ➝ if <expressao> then <comando sem rotulo> [else <comando sem rotulo>]
   def comando_condicional
