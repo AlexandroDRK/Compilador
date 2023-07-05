@@ -1,7 +1,7 @@
 require_relative "automatos.rb"
 
 class Lexico
-  $pr = ["program", "if", "then", "else", "while", "do", "until", "repeat", "int", "double", "char", "case","switch","end", "procedure", "function","for", "begin"]
+  $pr = ["program", "if", "then", "else", "while", "do", "until", "repeat", "int", "double", "char", "boolean", "case","switch","end", "procedure", "function","for", "begin"]
 
   def initialize(filename)
     @file = File.open(filename,"r")

@@ -1,9 +1,1 @@
-program teste ;
-->type car = foo; 
-b = boolean;
-cls = double;
-aaa = char;
-ccc = int;
-var aa bb : int;
-var bb cc : char;<-
-function a(a:a)
+program teste;
