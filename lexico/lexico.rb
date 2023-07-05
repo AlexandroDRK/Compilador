@@ -112,7 +112,7 @@ class Lexico
     when "reser"
       @token_analisado = true
       @token_classe[token] = classe
-    when "dig"
+    when "digit"
       @token_analisado = true
       @token_classe[token] = classe
     when "simb"

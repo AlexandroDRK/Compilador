@@ -6,24 +6,28 @@ class Sintatico
   end
 
   def parse
-    # <programa> ➝ program <identificador>; <bloco>
-    @token = obter_token
-    if valor_token(@token) != "program"
-      log_erro(@token,"P01")
-    end
-
-    @token = obter_token
-    if classe_token(@token) != "ident"
-      log_erro(@token,"P02")
-    end
-
-    @token = obter_token
-    if valor_token(@token) != ";"
-      log_erro(@token,"P03")
-    end
-    bloco()
+    programa()
     puts "Compilado com sucesso."
   end
+
+  # <programa> ➝ program <identificador>; <bloco>
+   def programa
+      @token = obter_token
+      if valor_token(@token) != "program"
+        log_erro(@token,"P01")
+      end
+
+      @token = obter_token
+      if classe_token(@token) != "ident"
+        log_erro(@token,"P02")
+      end
+
+      @token = obter_token
+      if valor_token(@token) != ";"
+        log_erro(@token,"P03")
+      end
+      bloco()
+    end
 =begin
   <bloco> [<definicao de tipos>] ➝
     [<definicao de variaveis>]
@@ -237,28 +241,111 @@ class Sintatico
   |<comando repetitivo> 
 =end
   def comando_sem_rotulo
-    
+    if variavel()
+      @token = obter_token
+      if valor_token(@token) == ":="
+        atribuicao()
+      elsif valor_token(@token) == "("
+        chamada_procedimento()
+      end 
+    end   
+
+    @token = obter_token
+    if valor_token(@token) == "if"
+     comando_condicional()
+    elsif valor_token(@token) == "while"
+      comando_repetitivo()
+    end
+  end    
 
   # 13. <atribuicao> ➝ <variavel> := <expressao> 
   def atribuicao
-    variavel()
-    if valor_token(@token) != ":="
-      log_erro(@token,"ATBR01")
-    end 
     expressao()
+  end
+
+  # 14. <chamada de procedimento> ➝ <identificador> [ (<lista de expressoes>)] 
+
+  # **15. <comando condicional> ➝ if <expressao> then <comando sem rotulo> [else <comando sem rotulo>]
+  def comando_condicional
+    expressao()
+    @token = obter_token
+    if valor_token(@token) != "then"
+      log_erro(@token,"COND02")
+    end
+    @token = obter_token
+    comando_sem_rotulo()
+    if valor_token(@token) == "else"
+      log_erro(@token,"COND02")
+    end
+  end
+
+  # **16. <comando repetitivo> ➝ while <expressao> do <comando sem rotulo>
+  def comando_repetitivo
+    expressao()
+    @token = obter_token
+    if valor_token(@token) != "do"
+      log_erro(@token,"REP02")
+    end
+    comando_sem_rotulo()
+  end
+
+  # 17. <lista de expressoes> ➝ <expressao> {,<expressao>} 
+  def lista_expressoes
+    expressao()
+
+    @token = obter_token
+    while valor_token(@token) == ","
+      expressao()
+      @token = obter_token
+      break if valor_token(@token) != ","
+    end
+  end
+
+  # 18. <expressao> ➝ <expressao simples> [<relacao> <expressao simples>] 
+  def expressao
+    expressao_simples()
+
+    if relacao()
+      expressao_simples()
+    end
   end
 
   # 19. <relacao> ➝ =| <>| < | <= | > | >= 
   def relacao
     @token = obter_token
-    if !["=", "<>", "<" , "<=" , ">" , ">="].include?(valor_token(@token))
+    if ["=", "<>", "<" , "<=" , ">" , ">="].include?(valor_token(@token))
       log_erro(@token,"R01")
+    else 
+      return true
     end
   end
 
   # 20. <expressao simples> ➝ [+ | -] <termo> {<operador1> <termo>}
   def expressao_simples
+    @token = obter_token
+    if ["+", "-"].include?(valor_token(@token))  
+      @token = obter_token
+    end
+    termo()
 
+    while operador1()
+      @token = obter_token
+      termo()
+      @token = obter_token
+      break if !operador1()
+    end
+  end
+
+  # 21. <termo> ➝ <fator> {<operador2> <fator>} 
+  def termo
+    fator()
+    @token = obter_token
+    while operador2()
+      @token = obter_token
+      fator()
+      @token = obter_token
+      break if !operador2()
+    end
   end
 
   # 22. <operador1> ➝ + | - | or 
@@ -266,6 +353,8 @@ class Sintatico
     @token = obter_token
     if !["+" , "-" , "or"].include?(valor_token(@token))
       log_erro(@token,"1OPR01")
+    else
+      return true
     end
   end
 
@@ -276,12 +365,43 @@ class Sintatico
       log_erro(@token,"2OPR01")
     end
   end
+=begin 
+  24. <fator> ➝ <variavel> 
+      |<digito>
+      |<chamada de funcao>
+      |(<expressao>)
+=end
+
+  def fator()
+    if variavel()
+      return true
+    elsif classe_token(@token) == "digit"
+      return true
+    elsif classe_token(@token) == "ident"
+      chamada_funcao()
+    else 
+      expressao()
+    end
+  end
 
   # 25. <variavel> ➝ <identificador> 
   def variavel
-    @token = obter_token
+    return classe_token(@token) != "ident"
+  end
+
+  # 26. <chamada de funcao> ➝ <identificador> [ (<lista de expressoes>)] 
+  def chamada_funcao
     if classe_token(@token) != "ident"
-      log_erro(@token,"V01")
+      log_erro(@token,"CF01")
+    end
+
+    @token = obter_token
+    if valor_token(@token) == "("
+      while true
+        lista_expressoes()
+        @token = obter_token
+        break if valor_token(@token) == ")"
+      end
     end
   end
 
