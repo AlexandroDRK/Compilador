@@ -177,7 +177,6 @@ class Sintatico
       log_erro(@token,"FCN02")
     end
     bloco()
-    puts @token
     @token = obter_token
     if @token.nil? or valor_token(@token) != ";"
       log_erro(@token,"FCN03")
@@ -252,7 +251,7 @@ class Sintatico
 
       comando_sem_rotulo()
 
-      puts @token.nil?
+      
       #@token = obter_token
       if @token.nil? or valor_token(@token) != ";"
         log_erro(@token,"CC02")
@@ -263,9 +262,9 @@ class Sintatico
       break if !@token.nil? or valor_token(@token) == "end"
     end
 
-    if @token.nil? or valor_token(@token) != "end"
-      log_erro(@token,"CC03")
-    end
+    #if @token.nil? or valor_token(@token) != "end"
+      #log_erro(@token,"CC03")
+    #end
   end
 =begin 
   12. <comando sem rotulo> ➝ <atribuicao> 
@@ -313,26 +312,25 @@ end
 
   # 14. <chamada de procedimento> ➝ <identificador> [ (<lista de expressoes>)] 
   def chamada_procedimento
-    if @token.nil? or classe_token(@token) != "ident"
-      log_erro(@token,"CF01")
-    end
+    #@token = obter_token
+    #if @token.nil? or classe_token(@token) != "ident"
+      #log_erro(@token,"CF01")
+    #end
 
-    @token = obter_token
-    if valor_token(@token) == "("
       while true
         lista_expressoes()
         @token = obter_token
-        break if valor_token(@token) == ")"
+        break if @token.nil? or valor_token(@token) == ")"
       end
-    end
   end
 
   # **15. <comando condicional> ➝ if <expressao> then <comando sem rotulo> [else <comando sem rotulo>]
   def comando_condicional
     expressao()
     @token = obter_token
+    puts @token
     if @token.nil? or valor_token(@token) != "then"
-      log_erro(@token,"COND02")
+      log_erro(@token,"COND01")
     end
     @token = obter_token
     comando_sem_rotulo()
@@ -348,6 +346,7 @@ end
     if @token.nil? or valor_token(@token) != "do"
       log_erro(@token,"REP02")
     end
+    @token = obter_token
     comando_sem_rotulo()
   end
 
@@ -389,18 +388,23 @@ end
     while !@token.nil? and operador1()
       @token = obter_token
       termo()
-      @token = obter_token
     end
   end
 
   # 21. <termo> ➝ <fator> {<operador2> <fator>} 
   def termo
+    # if @token.nil?
+    #   log_erro(@token,"TRM01")
+    # end
+
     fator()
+    
     @token = obter_token
     
     while !@token.nil? and operador2()
-      @token = obter_token
+      
       fator()
+      @token = obter_token
     end
   end
 
@@ -423,7 +427,7 @@ end
 
   def fator()
     if @token.nil?
-      log_erro(@token,"Erro")
+      log_erro(@token,"FTR01")
     end
 
     if variavel()
@@ -494,12 +498,15 @@ end
       'CC01' => "esperado begin.",
       'CC02' => "esperado ;",
       'CC03' => "esperado end",
-      "CSR01" => "Esperado comando sem rótulo.",
+      "CSR01" => "esperado comando sem rótulo.",
+      "COND01" => "esperado then",
       'LI01' => "o token deve ser do tipo identificador.",
       'PF01' => "esperado um (",
       'PF02' => "o token deve ser um indentificador",
       'PF03' => "esperado um :",
       'PF04' => "esperado um )",
+      "FTR01" => "Fator não pode ser nulo",
+      "TRM01" => "Termo não pode ser nulo",
       'R01' => "o token não é um operador relacional.",
       'OPR_101' => "o token não é um operador válido.",
       'OPR_201' => "o token não é um operador válido.",

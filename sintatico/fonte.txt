@@ -4,18 +4,21 @@ var a,b : int;
   ass,a~2: boolean;
   <-
 
-
+->
 function bb(a:a);
 begin
   a := x;
-end;
-
+end;<-
+->
 procedure aaa(a:a);
 
 begin
   a := x;
-end;
+end;<-
 
 begin
   a := x;
+  a := b;
+  a := 3;
+  @@write(a);
 end
