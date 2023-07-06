@@ -6,19 +6,24 @@ class Sintatico
   end
 
   def parse
+    start_time = Time.now
+
     programa()
+    end_time = Time.now
     puts "Compilado com sucesso."
+    elapsed_time = end_time - start_time
+    puts "Tempo de execução: #{elapsed_time} segundos"
   end
 
   # <programa> ➝ program <identificador>; <bloco>
-   def programa
+   def programa #OK
       @token = obter_token
       if @token == nil or valor_token(@token) != "program"
         log_erro(@token,"P01")
       end
 
       @token = obter_token
-      if classe_token(@token) != "ident"
+      if @token.nil? or classe_token(@token) != "ident"
         log_erro(@token,"P02")
       end
 
@@ -34,14 +39,15 @@ class Sintatico
     [<definicao de sub-rotinas>]
     <comando composto>
 =end
-  def bloco()
+  def bloco() #OK
     @token = obter_token
 
     if @token != nil
       if valor_token(@token) == "type"
         def_tipos()
       end
-      if valor_token(@token) == "var"
+
+      if @token.nil? or valor_token(@token) == "var"
         def_variaveis()
       end 
 
@@ -54,118 +60,117 @@ class Sintatico
         end
       end 
     end
-    procedimento_composto()
+    #comando_composto()
   end
 
   # <definicao de tipos> ➝ type <identificador> = <tipo> {; <identificador> = <tipo>};
-  def def_tipos()
+  def def_tipos() #OK
     @token = obter_token
 
-    begin
+    while true
 
-      if classe_token(@token) != "ident"
-        log_erro(@token,"B01")
+      if @token.nil? or classe_token(@token) != "ident"
+        log_erro(@token,"DT01")
       end
 
       @token = obter_token
       if @token == nil or valor_token(@token) != "="
-        log_erro(@token,"B02") 
+        log_erro(@token,"DT02") 
       end
 
       tipo()
 
       @token = obter_token
       if @token == nil or valor_token(@token) != ";"
-        log_erro(@token,"B03")
+        log_erro(@token,"DT03")
       end 
       
       @token = obter_token
-      
-    end while not (classe_token(@token) != "ident")
-    @token = @token
+      if (@token.nil? or classe_token(@token) != "ident")
+        break
+      end
+    end 
   end
 
   # <tipo> <identificador> | ➝ integer | boolean | double | char
-  def tipo()
+  def tipo() #OK
     @token = obter_token
-    if classe_token(@token) != "reser"
-      log_erro(@token,"T01")
-    end
 
-    if !["int","boolean","char","double"].include?(valor_token(@token))
+    if @token == nil or !["int","boolean","char","double"].include?(valor_token(@token))
       log_erro(@token,"T02")
     end
   end 
 
   # 5. <definicao de variaveis> ➝ var <lista de identificadores> : <tipo> {;<lista de identificadores> : <tipo>};
-  def def_variaveis
-    begin
+  def def_variaveis #OK
+
+    @token = obter_token
+    if @token == nil or classe_token(@token) != "ident"
+      log_erro(@token,"L101")
+    end
+
+    while true
       lista_identificadores()
       if @token == nil or valor_token(@token) != ":"
         log_erro(@token,"VR01")
       end
+
       tipo()
+
       @token = obter_token
       if @token == nil or valor_token(@token) != ";"
         log_erro(@token,"B03")
       end 
-    end while (classe_token(@token) != "ident")
+
+      @token = obter_token
+      break if (@token.nil? or classe_token(@token) != "ident")
+    end 
   end
 
   # 6. <lista de identificadores> <identificador> {, <identificador>} ➝
-  def lista_identificadores
+  def lista_identificadores #OK
 
-    begin
+    @token = obter_token
+    while !@token.nil? and (valor_token(@token) == ",")
+
       @token = obter_token
-    end while not (classe_token(@token) != "ident")
+      if @token == nil or classe_token(@token) != "ident"
+        log_erro(@token,"L101")
+      end
+
+      @token = obter_token
+    end
   end
 
   # 8. <definicao de procedimento> ➝ procedure <identificador> [<parametros formais>] ; <bloco>
-  def def_procedimentos
+  def def_procedimentos #50%
     @token = obter_token
-    if @token == nil or valor_token(@token) != "procedure"
+    if @token.nil? or classe_token(@token) != "ident"
       log_erro(@token,"PCDR01")
-    end 
-
-    @token = obter_token
-    if classe_token(@token) != "ident"
-      log_erro(@token,"PCDR02")
     end 
 
     parametros_formais()
     
     @token = obter_token
     if @token == nil or valor_token(@token) != ";"
-      log_erro(@token,"PF03")
+      log_erro(@token,"PCDR02")
     end
-    bloco()
+    #bloco()
   end
 
   # 9. <definição de funcao> ➝ function <identificador> [<parametros formais>] : identificador ; <bloco>
   def def_funcoes
-
     @token = obter_token
-    if classe_token(@token) != "ident"
-      log_erro(@token,"FNC02")
+    if @token.nil? or classe_token(@token) != "ident"
+      log_erro(@token,"FCNR01")
     end 
 
     parametros_formais()
-
-    @token = obter_token
-    if @token == nil or valor_token(@token) != ":"
-      log_erro(@token,"FNC03")
-    end
-
-    @token = obter_token
-    if classe_token(@token) != "ident"
-      log_erro(@token,"FNC04")
-    end
     
     @token = obter_token
     if @token == nil or valor_token(@token) != ";"
-      log_erro(@token,"FNC05")
+      log_erro(@token,"FCN02")
     end
-
     bloco()
   end
 
@@ -177,23 +182,33 @@ class Sintatico
       log_erro(@token,"PF01")
     end
 
+    @token = obter_token
+    if @token.nil? or classe_token(@token) != "ident"
+      log_erro(@token,"PF02")
+    end 
+
     lista_identificadores()
 
     if @token == nil or valor_token(@token) != ":"
-      log_erro(@token,"PF02")
+      log_erro(@token,"PF03")
     end
 
     @token = obter_token
-    if classe_token(@token) != "ident"
-      log_erro(@token,"PF03")
+
+    if @token.nil? or classe_token(@token) != "ident"
+      log_erro(@token,"PF02")
     end
 
     @token = obter_token
     # if @token == nil or valor_token(@token) != ";"
     #   log_erro(@token,"PF03")
     # end 
-    while valor_token(@token) == ";"
+    while !@token.nil? and valor_token(@token) == ";"
       @token = obter_token
+      if @token.nil? or classe_token(@token) != "ident"
+        log_erro(@token,"PF02")
+      end 
+
       lista_identificadores()
 
       @token = obter_token
@@ -202,7 +217,7 @@ class Sintatico
       end
   
       @token = obter_token
-      if classe_token(@token) != "ident"
+      if @token.nil? or classe_token(@token) != "ident"
         log_erro(@token,"PF03")
       end
 
@@ -217,14 +232,15 @@ class Sintatico
 
   # 11. <comando composto> ➝ begin <comando sem rotulo>; {<comando sem rotulo>;} end
   def comando_composto
-    @token = obter_token
     if @token == nil or valor_token(@token) != "begin"
       log_erro(@token,"CC01")
     end
 
     @token = obter_token
 
-    while comando_sem_rotulo()
+    while true
+
+      comando_sem_rotulo()
 
       @token = obter_token
       if @token == nil or valor_token(@token) != ";"
@@ -242,23 +258,40 @@ class Sintatico
   |<comando condicional>
   |<comando repetitivo> 
 =end
-  def comando_sem_rotulo
-    if variavel()
-      @token = obter_token
-      if valor_token(@token) == ":="
-        atribuicao()
-      elsif valor_token(@token) == "("
-        chamada_procedimento()
-      end 
-    end   
+def comando_sem_rotulo
+  if @token.nil?
+    log_erro(@token,"CSR01")
+  end
 
+  if ["read","write"].include?(valor_token(@token))
     @token = obter_token
-    if valor_token(@token) == "if"
-     comando_condicional()
-    elsif valor_token(@token) == "while"
-      comando_repetitivo()
+
+    if !@token.nil? and valor_token(@token) != "("
+      log_erro(@token,"CSR01")
     end
-  end    
+
+    chamada_procedimento()
+  end 
+
+  if variavel()
+    @token = obter_token
+    if !@token.nil? and valor_token(@token) == ":="
+      atribuicao()
+    elsif !@token.nil? and valor_token(@token) == "("
+      chamada_procedimento()
+    else
+      log_erro(@token,"CSR2")
+    end  
+  elsif valor_token(@token) == "if"
+    comando_condicional()
+  elsif valor_token(@token) == "while"
+    comando_repetitivo()
+  else
+    log_erro(@token,"CSR02")
+  end  
+end
+
+    
 
   # 13. <atribuicao> ➝ <variavel> := <expressao> 
   def atribuicao
@@ -267,7 +300,7 @@ class Sintatico
 
   # 14. <chamada de procedimento> ➝ <identificador> [ (<lista de expressoes>)] 
   def chamada_procedimento
-    if classe_token(@token) != "ident"
+    if @token.nil? or classe_token(@token) != "ident"
       log_erro(@token,"CF01")
     end
 
@@ -310,7 +343,7 @@ class Sintatico
     expressao()
 
     @token = obter_token
-    while valor_token(@token) == ","
+    while !@token.nil? and valor_token(@token) == ","
       expressao()
       @token = obter_token
       break if @token == nil or valor_token(@token) != ","
@@ -321,7 +354,7 @@ class Sintatico
   def expressao
     expressao_simples()
 
-    if relacao()
+    if !@token.nil? and relacao()
       expressao_simples()
     end
   end
@@ -344,11 +377,10 @@ class Sintatico
     end
     termo()
 
-    while operador1()
+    while !@token.nil? and operador1()
       @token = obter_token
       termo()
       @token = obter_token
-      break if !operador1()
     end
   end
 
@@ -356,11 +388,10 @@ class Sintatico
   def termo
     fator()
     @token = obter_token
-    while operador2()
+    while !@token.nil? and operador2()
       @token = obter_token
       fator()
       @token = obter_token
-      break if !operador2()
     end
   end
 
@@ -368,7 +399,7 @@ class Sintatico
   def operador1
     @token = obter_token
     if !["+" , "-" , "or"].include?(valor_token(@token))
-      log_erro(@token,"1OPR01")
+      log_erro(@token,"OPR_101")
     else
       return true
     end
@@ -376,9 +407,10 @@ class Sintatico
 
   # 23. <operador2> ➝ * | div | and 
   def operador2
-    @token = obter_token
     if !["*", "div" , "and"].include?(valor_token(@token))
-      log_erro(@token,"2OPR01")
+      log_erro(@token,"OPR_201")
+    else 
+      return true
     end
   end
 =begin 
@@ -391,9 +423,9 @@ class Sintatico
   def fator()
     if variavel()
       return true
-    elsif classe_token(@token) == "digit"
+    elsif @token.nil? or classe_token(@token) == "digit"
       return true
-    elsif classe_token(@token) == "ident"
+    elsif @token.nil? or classe_token(@token) == "ident"
       chamada_funcao()
     else 
       expressao()
@@ -402,7 +434,7 @@ class Sintatico
 
   # 25. <variavel> ➝ <identificador> 
   def variavel
-    return classe_token(@token) != "ident"
+    return classe_token(@token) == "ident"
   end
 
   # 26. <chamada de funcao> ➝ <identificador> [ (<lista de expressoes>)] 
@@ -440,18 +472,24 @@ class Sintatico
       'P01' => "esperado a palavra reservada program.",
       'P02' => "o token deve ser do tipo identificador.",
       'P03' => "esperado um ;",
-      'B01' => "o token deve ser do tipo identificador.",
-      'B02' => "esperado um =",
-      'B03' => "esperado um ;",
+      'DT01' => "o token deve ser do tipo identificador.",
+      'DT02' => "esperado um =",
+      'DT03' => "esperado um ;",
       'T01' => "o token deve ser uma palavra reservada.",
       'T02' => "o token deve ser um tipo válido.",
+      'PCDR01' => "o nome de uma procedure deve ser do tipo identificador.",
+      'PCDR02' => "esperado ;",
+      'CC01' => "esperado begin.",
+      'CC02' => "esperado ;",
+      "CSR01" => "Esperado comando sem rótulo.",
       'LI01' => "o token deve ser do tipo identificador.",
-      'PF01' => "esperado um :",
-      'PF02' => "o token deve ser do tipo identificador.",
-      'PF03' => "esperado um ;",
+      'PF01' => "esperado um (",
+      'PF02' => "o token deve ser um indentificador",
+      'PF03' => "esperado um :",
+      'PF04' => "esperado um )",
       'R01' => "o token não é um operador relacional.",
-      '1OPR01' => "o token não é um operador válido.",
-      '2OPR01' => "o token não é um operador válido.",
+      'OPR_101' => "o token não é um operador válido.",
+      'OPR_201' => "o token não é um operador válido.",
       'V01' => "o token deve ser do tipo identificador.",
     }
 

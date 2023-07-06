@@ -1,1 +1,13 @@
 program teste;
+type c = int;
+var a,b : int;
+  ass: boolean;
+
+procedure aaa(a:a);
+function bb(a:a);
+
+//
+begin
+  a := +x;
+end
+//

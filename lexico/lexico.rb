@@ -1,7 +1,7 @@
 require_relative "automatos.rb"
 
 class Lexico
-  $pr = ["program", "if", "then", "else", "while", "do", "until", "repeat", "int", "double", "char", "boolean", "case","switch","end", "procedure", "function","for", "begin"]
+  $pr = ["program", "if", "then", "else", "while", "do", "until", "repeat", "int", "double", "char", "boolean","var", "case","switch","end", "procedure", "function","for", "begin"]
 
   def initialize(filename)
     @file = File.open(filename,"r")
@@ -74,7 +74,7 @@ class Lexico
       verifica_palavra_reservada(@token, $pr)
       print_saida(@classe, @token)
     when 5,8
-      @classe= 'dig'
+      @classe= 'digit'
       print_saida(@classe, @token)
     when 6,9,13,17
       @classe= 'simb'
