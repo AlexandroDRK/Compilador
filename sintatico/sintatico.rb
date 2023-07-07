@@ -249,7 +249,7 @@ class Sintatico
       end 
 
       @token = obter_token
-      break if !@token.nil? or valor_token(@token) == "end"
+      break if @token.nil? or valor_token(@token) == "end"
     end
   end
 =begin 
@@ -464,13 +464,14 @@ end
       'CC02' => "esperado ;",
       'CC03' => "esperado end",
       "CSR01" => "esperado comando sem rótulo.",
-      "CSR02" => "esperado comando sem rótulo.",
+      "CSR02" => "esperado (",
       "COND01" => "esperado then",
       'LI01' => "o token deve ser do tipo identificador.",
       'PF01' => "esperado um (",
       'PF02' => "o token deve ser um indentificador",
       'PF03' => "esperado um :",
       'PF04' => "esperado um )",
+      "REP02" => "esperado do",
       "FTR01" => "Fator não pode ser nulo",
       "TRM01" => "Termo não pode ser nulo",
       'R01' => "o token não é um operador relacional.",

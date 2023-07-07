@@ -1,34 +1,20 @@
-program x;//
+program x;
 type i = integer; b = boolean;
 var a, j: double; x: i;
 
-procedure x (n: i);
+procedure proc (n: i);
 begin
   write(n);
 end;
 
-function w (l:b; d:x) : w;
+function asff (l:b; d:x) : w;
 begin
   w := b and x > 10;
-end;//
+end;
 
 begin
-  @@ teste de atribuição
-  @@a := +x or y and e; a := 0; a := x(2);
-  @@ teste de chamada de procedimento
-  r(-a, a <> -1 div 2);
-  @@ teste de condicional
-  if 
-    i > 1 
-  then 
-    write(a,0) 
-  else 
-    write(b, 1);
-  @@ teste de repetitivo
-  while 
-    j < 3 
-  do 
+  j := j;
+  while a < 3 do
     j := j + 1;
-    
-  p := -8,3 * 3;
+   p := s * 3;   
 end
