@@ -1,0 +1,30 @@
+program t;
+//
+type c = integer;
+var a,b : integer;
+  ass,a~2: boolean;
+//
+
+//
+function bb(a:a);
+begin
+  @@write(a);
+end;
+//
+
+//
+procedure aaa(a:a);
+begin
+  @@a := 5;
+  @@a := x + 3;
+  @@while a do x;
+end;//
+
+
+begin
+  a := x;
+  c := b;
+  a := +x or y and e;
+  if a then x;
+  write(a);
+end

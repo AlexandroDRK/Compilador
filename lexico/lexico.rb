@@ -1,7 +1,7 @@
 require_relative "automatos.rb"
 
 class Lexico
-  $pr = ["program", "if", "then", "else", "while", "do", "until", "repeat", "int", "double", "char", "boolean","var", "case","switch","end", "procedure", "function","for", "begin"]
+  $pr = ["program", "if", "then", "else", "while", "do", "until", "repeat", "integer", "double", "char", "boolean","var", "case","switch","end", "procedure", "function","for", "begin"]
 
   def initialize(filename)
     @file = File.open(filename,"r")
@@ -14,6 +14,8 @@ class Lexico
     @classe = ""
     @linha_atual = 1
   end
+
+  attr_reader :linha_atual
 
   def gerar_token
     while @input_index < @input.length

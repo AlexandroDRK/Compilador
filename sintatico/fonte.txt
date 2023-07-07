@@ -1,24 +1,34 @@
-program t;
-->type c = int;
-var a,b : int;
-  ass,a~2: boolean;
-  <-
+program x;//
+type i = integer; b = boolean;
+var a, j: double; x: i;
 
-->
-function bb(a:a);
+procedure x (n: i);
 begin
-  a := x;
-end;<-
-->
-procedure aaa(a:a);
+  write(n);
+end;//
 
+function w (l:b; d:x) : w;
 begin
-  a := x;
-end;<-
+  w := b and x > 10;
+end;
 
 begin
-  a := x;
-  a := b;
-  a := 3;
-  @@write(a);
+  @@ teste de atribuição
+  a := +x or y and e; a := 0; a := x(2);
+  @@ teste de chamada de procedimento
+  r(-a, a <> -1 div 2);
+  @@ teste de condicional
+  if 
+    i > 1 
+  then 
+    write(a,0) 
+  else 
+    write(b, 1);
+  @@ teste de repetitivo
+  while 
+    j < 3 
+  do 
+    j := j + 1;
+    
+  p := -8,3 * 3;
 end
