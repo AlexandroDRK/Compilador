@@ -5,16 +5,16 @@ var a, j: double; x: i;
 procedure x (n: i);
 begin
   write(n);
-end;//
+end;
 
 function w (l:b; d:x) : w;
 begin
   w := b and x > 10;
-end;
+end;//
 
 begin
   @@ teste de atribuição
-  a := +x or y and e; a := 0; a := x(2);
+  @@a := +x or y and e; a := 0; a := x(2);
   @@ teste de chamada de procedimento
   r(-a, a <> -1 div 2);
   @@ teste de condicional
