@@ -1,11 +1,11 @@
 require_relative "../lexico/lexico.rb"
 class Sintatico
-  def initialize(lexer)
-    @lexer = lexer
+  def initialize(lexico)
+    @lexico = lexico
     @token = nil 
   end
 
-  def parse
+  def analisar_tokens
     start_time = Time.now
     programa()
     end_time = Time.now
@@ -14,10 +14,10 @@ class Sintatico
     puts "Tempo de execução: #{elapsed_time} segundos"
   end
 
-  # <programa> ➝ program <identificador>; <bloco>
+  # 1. <programa> ➝ program <identificador>; <bloco>
    def programa #OK
       @token = obter_token
-      if @token.nil? or valor_token(@token) != "program"
+      if @token == nil or valor_token(@token) != "program"
         log_erro(@token,"P01")
       end
 
@@ -33,7 +33,7 @@ class Sintatico
       bloco()
     end
 =begin
-  <bloco> [<definicao de tipos>] ➝
+  2. <bloco> [<definicao de tipos>] ➝
     [<definicao de variaveis>]
     [<definicao de sub-rotinas>]
     <comando composto>
@@ -49,7 +49,8 @@ class Sintatico
       if @token.nil? or valor_token(@token) == "var"
         def_variaveis()
       end 
-
+      # 7. <definicao de sub-rotinas> {<definicao de procedimento>; ➝
+      # | <definição de funcao>;}
       while @token and ["procedure", "function"].include?(valor_token(@token))
         if valor_token(@token) == "procedure"
           def_procedimentos()
@@ -65,9 +66,12 @@ class Sintatico
       end 
     end
     comando_composto()
+    if @token.nil? or valor_token(@token) != "end"
+      log_erro(@token,"BL02")
+    end
   end
 
-  # <definicao de tipos> ➝ type <identificador> = <tipo> {; <identificador> = <tipo>};
+  # 3. <definicao de tipos> ➝ type <identificador> = <tipo> {; <identificador> = <tipo>};
   def def_tipos() #OK
     @token = obter_token
 
@@ -98,7 +102,7 @@ class Sintatico
     end 
   end
 
-  # <tipo> ➝ <identificador> | integer | boolean | double | char
+  # 4.  <tipo> ➝ <identificador> | integer | boolean | double | char
   def tipo() #OK
     @token = obter_token
 
@@ -133,7 +137,7 @@ class Sintatico
     end 
   end
 
-  # 6. <lista de identificadores> <identificador> {, <identificador>} ➝
+  # 6. <lista de identificadores> ➝ <identificador> {, <identificador>} 
   def lista_identificadores #OK
 
     @token = obter_token
@@ -171,7 +175,6 @@ class Sintatico
 
     parametros_formais()
     
-    #@token = obter_token
     if @token.nil? or valor_token(@token) != ":"
       log_erro(@token,"FCN02")
     end
@@ -243,11 +246,9 @@ class Sintatico
 
     while true
       comando_sem_rotulo()
-
       if @token.nil? or valor_token(@token) != ";"
         log_erro(@token,"CC02")
       end 
-
       @token = obter_token
       break if @token.nil? or valor_token(@token) == "end"
     end
@@ -404,13 +405,13 @@ end
       expressao()
       @token = obter_token
       if @token.nil? or valor_token(@token) != ")"
-        log_erro(@token,"FTR01")
+        log_erro(@token,"FTR02")
       end
     end
   end
 
   # 25. <variavel> ➝ <identificador> 
-  def variavel #200%
+  def variavel #OK
     return classe_token(@token) == "ident"
   end
 
@@ -428,8 +429,8 @@ end
     end
   end
 
-  def obter_token #10000000000000000000%
-    token = @lexer.gerar_token
+  def obter_token #OK
+    token = @lexico.gerar_token
     return token
   end
 
@@ -444,47 +445,53 @@ end
   def log_erro(token,code_error)
   
     erros = {
-      'P01' => "esperado a palavra reservada program.",
-      'P02' => "o token deve ser do tipo identificador.",
-      'P03' => "esperado um ;",
-      'DT01' => "o token deve ser do tipo identificador.",
-      'DT02' => "esperado um =",
-      'DT03' => "esperado um ;",
-      'T01' => "o token deve ser uma palavra reservada.",
-      'T02' => "o token deve ser um tipo válido.",
-      'PCDR01' => "o nome de uma procedure deve ser do tipo identificador.",
-      'PCDR02' => "esperado ;",
-      "BL01" => "esperado ;",
+      "P01" => "esperado [program].",
+      "P02" => "o token deve ser do tipo identificador.",
+      "P03" => "esperado [;].",
+      "BL01" => "esperado [;].",
+      "BL02" => "esperado [end].",
+      "DT01" => "o token deve ser do tipo identificador.",
+      "DT02" => "esperado [=].",
+      "DT03" => "esperado [;].",
+      "T01" => "o token deve ser uma palavra reservada.",
+      "T02" => "o token deve ser um tipo válido.",
+      "LI01" => "o token deve ser do tipo identificador.",
+      "PCDR01" => "o nome de uma procedure deve ser do tipo identificador.",
+      "PCDR02" => "esperado [;].",
       "FCN01" => "o nome de uma procedure deve ser do tipo identificador.",
-      "FCN02" => "esperado :",
-      "FCN03" => "o token deve ser um identificador",
-      "FCN04" => "esperado ;",
-      "CP01" => "esperado )",
-      'CC01' => "esperado begin.",
-      'CC02' => "esperado ;",
-      'CC03' => "esperado end",
+      "FCN02" => "esperado [:].",
+      "FCN03" => "o token deve ser um identificador.",
+      "FCN04" => "esperado [;].",
+      "PF01" => "esperado [(].",
+      "PF02" => "o token deve ser um indentificador.",
+      "PF03" => "esperado [:].",
+      "PF04" => "esperado [)].",
+      "CC01" => "esperado [begin.",
+      "CC02" => "esperado [;].",
+      "CC03" => "esperado [end].",
       "CSR01" => "esperado comando sem rótulo.",
-      "CSR02" => "esperado (",
-      "COND01" => "esperado then",
-      'LI01' => "o token deve ser do tipo identificador.",
-      'PF01' => "esperado um (",
-      'PF02' => "o token deve ser um indentificador",
-      'PF03' => "esperado um :",
-      'PF04' => "esperado um )",
-      "REP02" => "esperado do",
-      "FTR01" => "Fator não pode ser nulo",
-      "TRM01" => "Termo não pode ser nulo",
-      'R01' => "o token não é um operador relacional.",
-      'OPR_101' => "o token não é um operador válido.",
-      'OPR_201' => "o token não é um operador válido.",
-      'V01' => "o token deve ser do tipo identificador.",
+      "CSR02" => "esperado [(].",
+      "CP01" => "esperado [)].",
+      "COND01" => "esperado [then].",
+      "REP02" => "esperado [do].",
+      "FTR01" => "Fator não pode ser nulo.",
+      "FTR02" => "esperado [)].",
+      "TRM01" => "Termo não pode ser nulo.",
+      "R01" => "o token não é um operador relacional.",
+      "OPR_101" => "o token não é um operador válido.",
+      "OPR_201" => "o token não é um operador válido.",
+      "CF01" => "esperado [)].",
+      "TVZ00" => "o programa chegou ao fim do arquivo."
     }
-
-    puts "Erro #{code_error} na linha #{@lexer.linha_atual} - encontrado: [#{valor_token(@token)}] - motivo: #{ erros[code_error]}"
+    if @token.nil?
+      puts "Erro TVZ00 na linha #{@lexico.linha_atual} - motivo:  #{erros[code_error]} Porém #{ erros["TVZ00"]}"
+    else
+      puts "Erro #{code_error} na linha #{@lexico.linha_atual} - encontrado: [#{valor_token(@token)}] - motivo: #{erros[code_error]}"
+    end
     exit
   end
 end
 
-lexer = Lexico.new("./sintatico/fonte.txt")
-parser = Sintatico.new(lexer)
-parser.parse
+lexico = Lexico.new("./sintatico/fonte.txt")
+sintatico = Sintatico.new(lexico)
+sintatico.analisar_tokens
